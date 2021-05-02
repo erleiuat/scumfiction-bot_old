@@ -1,5 +1,3 @@
-
-
 /*
 let token = "3JYfPqLFwXjRuRyiVkuUJIsf-KFSJDnH4bRRMMd5zw247YspkI0lZX7WS0I44S5yv5TrX93cAbFgy8T8i3z38AMGae5aZTL0Id5D"
 let serverID = "8601357"
@@ -13,15 +11,15 @@ console.log("executing")
 var files = []
 
 //Braindead decoder that assumes fully valid input
-function decodeUTF16LE( binaryStr ) {
+function decodeUTF16LE(binaryStr) {
     var cp = [];
-    for( var i = 0; i < binaryStr.length; i+=2) {
-        cp.push( 
+    for (var i = 0; i < binaryStr.length; i += 2) {
+        cp.push(
             binaryStr.charCodeAt(i) |
-            ( binaryStr.charCodeAt(i+1) << 8 )
+            (binaryStr.charCodeAt(i + 1) << 8)
         );
     }
-    return String.fromCharCode.apply( String, cp );
+    return String.fromCharCode.apply(String, cp);
 }
 
 var settings = {
@@ -29,19 +27,19 @@ var settings = {
     "method": "GET",
     "timeout": 0,
     "headers": {
-    "Authorization": "Bearer 3JYfPqLFwXjRuRyiVkuUJIsf-KFSJDnH4bRRMMd5zw247YspkI0lZX7WS0I44S5yv5TrX93cAbFgy8T8i3z38AMGae5aZTL0Id5D"
+        "Authorization": "Bearer 3JYfPqLFwXjRuRyiVkuUJIsf-KFSJDnH4bRRMMd5zw247YspkI0lZX7WS0I44S5yv5TrX93cAbFgy8T8i3z38AMGae5aZTL0Id5D"
     },
-}; 
+};
 
 $.ajax(settings).done(function (response) {
 
     var fileNames = []
 
     response.data.entries.forEach(element => {
-        if(element.name.includes("chat")){
+        if (element.name.includes("chat")) {
             fileNames.push(element.name)
             files.push({
-                date: element.modified_at, 
+                date: element.modified_at,
                 file: element.name
             })
         }
@@ -59,41 +57,41 @@ $.ajax(settings).done(function (response) {
 
     console.log(fileNames.sort())
     logEntries = []
-    
+
     files.forEach(element => {
         $.ajax({
-            ...settings2, 
-            "url": url+element.file
+            ...settings2,
+            "url": url + element.file
         }).done(function (response) {
-            
+
             // console.log(response.data.token.url);
 
             fetch(response.data.token.url)
-            .then(function(response) {
-                //console.log(response)
-                return response.text();
-            }).then(function(data) {
+                .then(function (response) {
+                    //console.log(response)
+                    return response.text();
+                }).then(function (data) {
 
-                var result = decodeUTF16LE(data);
+                    var result = decodeUTF16LE(data);
 
-                var arrayOfLines = result.match(/[^\r\n]+/g);
+                    var arrayOfLines = result.match(/[^\r\n]+/g);
 
-                /*
-                arrayOfLines.forEach(element => {
-                    $('.results').append(element + "<br/><br/>")
+                    /*
+                    arrayOfLines.forEach(element => {
+                        $('.results').append(element + "<br/><br/>")
+                    })
+                    */
+
+                    //console.log(arrayOfLines)
+                    //logEntries.push(arrayOfLines)
+
+                    logEntries = logEntries.concat(arrayOfLines)
+
+                    //$('.results').append(data.replace(" ", ""))
+                    //$('.results').append(result.replace("", "") + "<br/>")
+
+                    //console.log(data); // this will be a string
                 })
-                */
-
-                //console.log(arrayOfLines)
-                //logEntries.push(arrayOfLines)
-
-                logEntries = logEntries.concat(arrayOfLines)
-
-                //$('.results').append(data.replace(" ", ""))
-                //$('.results').append(result.replace("", "") + "<br/>")
-
-                //console.log(data); // this will be a string
-            })
 
         });
     })
@@ -129,12 +127,12 @@ $.ajax(settings).done(function (response) {
 })
 
 
-setTimeout(function(){ 
+setTimeout(function () {
 
     var content = ""
     logEntries = logEntries.sort().reverse()
     logEntries.forEach(el => {
-        if(!el.includes("Game version:")){
+        if (!el.includes("Game version:")) {
 
             console.log(el)
             var splitted = el.split("' '")
