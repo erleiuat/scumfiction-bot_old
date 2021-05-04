@@ -1,7 +1,6 @@
 const request = require('request');
-'use strict';
-
 const fs = require('fs');
+'use strict';
 
 function decodeUTF16LE(binaryStr) {
     var cp = [];
@@ -78,24 +77,14 @@ async function getLogs(type = "chat") {
     let downloadUrl = "https://api.nitrado.net/services/" + process.env.serverID + "/gameservers/file_server/download?file=/games/" + process.env.userID + "/noftp/scum/SCUM/Saved/SaveFiles/Logs/";
 
     files = await getFileList(reqListOptions, type)
-    console.log(files);
-    var ende = files.length;
-    let list = fs.readFileSync('scannedadminlogs.json');
-    let onlist = JSON.parse(list);
-    
-    for (const file of files) {
-        console.log(onlist);
-        if(onlist.indexOf(file) == -1)
-        {
-        let url = downloadUrl + file
-        console.log(file)
-        let newEntries = await getFileDL(reqDownloadOptions, url)
-        logEntries = {...logEntries, ...newEntries}
+    let onlist = JSON.parse(fs.readFileSync('scannedadminlogs.json'));
+    fs.writeFileSync('scannedadminlogs.json', JSON.stringify(files));
 
-        }
-    }
-    let downloaded = JSON.stringify(files);
-    fs.writeFileSync('scannedadminlogs.json', downloaded);
+    for (const file of files)
+        if (onlist.indexOf(file) == -1) logEntries = {
+            ...logEntries,
+            ...await getFileDL(reqDownloadOptions, downloadUrl + file)
+        };
 
     return logEntries
 
