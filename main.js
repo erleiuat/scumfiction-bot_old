@@ -133,9 +133,10 @@ client.on('ready', () => {
     console.log(`Logged in as ${client.user.tag}!`);
     
     doChatLogs()
-    doAdminLogs()
-    doKillLogs()
+    //doAdminLogs()
+    //doKillLogs()
 
+    /*
     setInterval(() => {
 
         doChatLogs()
@@ -143,6 +144,7 @@ client.on('ready', () => {
         doKillLogs()
 
     }, 60000);
+    */
 
 });
 
