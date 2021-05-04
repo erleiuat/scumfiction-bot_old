@@ -102,6 +102,7 @@ function doChatLogs() {
 
                 let formatted = formatter.chatLog(line)
 
+                /*
                 
                 if (!chatLog[formatted.key]) {
                     await channel.send(
@@ -110,7 +111,9 @@ function doChatLogs() {
                         chatLog[formatted.key] = formatted.line;
                         console.log('sent: ' + formatted.key);
                     });
-                }     
+                } 
+                
+                */
 
 
             }
@@ -129,9 +132,9 @@ client.on('ready', () => {
 
     console.log(`Logged in as ${client.user.tag}!`);
 
+    doChatLogs()
     doAdminLogs()
     doKillLogs()
-    //doChatLogs()
 
 });
 

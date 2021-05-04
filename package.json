@@ -1,0 +1,26 @@
+{
+  "name": "scumfiction-bot",
+  "version": "1.0.0",
+  "description": "123",
+  "main": "main.js",
+  "dependencies": {
+    "discord.js": "^12.5.3",
+    "dotenv": "^8.2.0",
+    "fetch": "^1.1.0",
+    "request": "^2.88.2"
+  },
+  "devDependencies": {},
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/erleiuat/scumfiction-bot.git"
+  },
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/erleiuat/scumfiction-bot/issues"
+  },
+  "homepage": "https://github.com/erleiuat/scumfiction-bot#readme"
+}
