@@ -21,11 +21,11 @@ client.on('ready', () => {
 
         for (const line in data) {
                 if(data[line].length >= 1 && !data[line].includes("Game version:") && !data[line].includes("Teleport")) {
-                    //console.log(data[line])
+                    console.log(data[line])
                         channel.send(
                             formatter.adminLog(data[line])
                         ).then(
-                            //console.log('sent')
+                            console.log('sent')
                         );
                 }
             }
