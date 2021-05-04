@@ -79,15 +79,13 @@ async function doAdminLogs() {
 
                 if (!adminLog[formatted.key]) {
 
-                    /*
                     await channel.send(
                         formatted.line
                     ).then(() => {
+                        adminLog[formatted.key] = formatted.line;
                         console.log('sent: ' + formatted.key);
                     });
-                    */
-                    adminLog[formatted.key] = formatted.line;
-                    
+
                 }
 
             }
@@ -126,18 +124,15 @@ async function doKillLogs() {
 
                 let formatted = formatter.killLog(line)
 
-                /*
                 if (!killLog[formatted.key]) {
                     await channel.send(
                         formatted.line
                     ).then(() => {
+                        killLog[formatted.key] = formatted.line;
                         console.log('sent: ' + formatted.key);
                     });
                 }
-                */
                 
-                killLog[formatted.key] = formatted.line;
-
             }
 
         }
