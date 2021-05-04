@@ -1,5 +1,6 @@
 const request = require('request');
 const iconv = require('iconv-lite');
+
 'use strict';
 
 
@@ -21,6 +22,7 @@ function getFileList(options, type) {
         })
     });
 }
+
 
 function getFileDL(options, downloadUrl) {
     return new Promise(resolve => {
@@ -44,6 +46,7 @@ function getFileDL(options, downloadUrl) {
         })
     });
 }
+
 
 async function getLogs(type = "chat") {
     let files = []
@@ -72,5 +75,6 @@ async function getLogs(type = "chat") {
     return logEntries.sort()
 
 }
+
 
 exports.getLogs = getLogs

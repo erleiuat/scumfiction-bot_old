@@ -4,9 +4,11 @@
   "description": "123",
   "main": "main.js",
   "dependencies": {
+    "basic-ftp": "^4.6.6",
     "discord.js": "^12.5.3",
     "dotenv": "^8.2.0",
     "fetch": "^1.1.0",
+    "ftp": "^0.3.10",
     "request": "^2.88.2"
   },
   "devDependencies": {},
