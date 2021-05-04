@@ -47,11 +47,12 @@ function chatLog(line) {
     matches.forEach(match)
 
     function match(item, index, arr) {
-        
+        /*
         console.log(arr[0])
         console.log(arr[2])
         console.log(arr[4])
         console.log(arr[6])
+        */
     }
 
     let lineFormatted = `\`\`\`ini\nTime: [ ` + date + ` - ` + time + ` ] User: [ ` + username + ` ]\nMessage: [ ` + message + ` ]  \`\`\``
