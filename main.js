@@ -70,7 +70,8 @@ function doKillLogs() {
                         console.log('sent: ' + formatted.key);
                     });
                 }
-
+               
+                
             }
 
         }
@@ -95,12 +96,12 @@ function doChatLogs() {
 
             if (
                 line.length >= 1 &&
-                !line.includes("Game version:")
+                !line.includes("Game version:") &&
+                line.split("' '")[1].startsWith('Global:')
             ) {
 
                 let formatted = formatter.chatLog(line)
-                //console.log()
-                /*
+
                 
                 if (!chatLog[formatted.key]) {
                     await channel.send(
@@ -110,7 +111,7 @@ function doChatLogs() {
                         console.log('sent: ' + formatted.key);
                     });
                 }     
-                */
+
 
             }
 
@@ -128,9 +129,9 @@ client.on('ready', () => {
 
     console.log(`Logged in as ${client.user.tag}!`);
 
-    //doAdminLogs()
-    //doKillLogs()
-    doChatLogs()
+    doAdminLogs()
+    doKillLogs()
+    //doChatLogs()
 
 });
 

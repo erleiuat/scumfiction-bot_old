@@ -1,3 +1,5 @@
+
+
 function adminLog(line) {
 
     let date = line.substring(0, 10)
@@ -23,8 +25,6 @@ function killLog(line) {
     let content = JSON.parse(line.substring(21))
     
     let lineFormatted = `\`\`\`ini\nTime: [ ` + date + ` - ` + time + ` ]\n[ ` + content.Killer.ProfileName + ` ] killed [ ` + content.Victim.ProfileName + ` ] \n\`\`\``
-
-
     
     return {
         'key': date + '.' + time + '.' + content.Victim.UserId,
@@ -40,8 +40,16 @@ function chatLog(line) {
 
     let date = line.substring(0, 10)
     let time = line.substring(11, 19).replace(/\./g, ":")
+    let steamID = line.substring(22, 39)
+    let username = 'WIP'
+    let message = line.split("' '")[1]
 
-    console.log(line.split("' '"))
+    let lineFormatted = `\`\`\`ini\nTime: [ ` + date + ` - ` + time + ` ] User: [ ` + username + ` ]\nMessage: [ ` + message + ` ]  \`\`\``
+
+    return {
+        'key': date + '.' + time + '.' + steamID,
+        'line': lineFormatted
+    }
     
 }
 
