@@ -1,4 +1,7 @@
 const request = require('request');
+'use strict';
+
+const fs = require('fs');
 
 function decodeUTF16LE(binaryStr) {
     var cp = [];
@@ -54,7 +57,7 @@ function getFileDL(options, downloadUrl) {
 }
 
 async function getLogs(type = "chat") {
-
+    var i = 0;
     let files = []
     let logEntries = []
 
@@ -76,11 +79,35 @@ async function getLogs(type = "chat") {
     let downloadUrl = "https://api.nitrado.net/services/" + process.env.serverID + "/gameservers/file_server/download?file=/games/" + process.env.userID + "/noftp/scum/SCUM/Saved/SaveFiles/Logs/";
 
     files = await getFileList(reqListOptions, type)
-
+    console.log(files);
+    var ende = files.length;
+    
     for (const file of files) {
+        let list = fs.readFileSync('scannedadminlogs.json');
+        let onlist = JSON.parse(list);
+        console.log(onlist);
+        if(onlist.indexOf(file) == -1)
+        {
         let url = downloadUrl + file
+        console.log(file)
         let newEntries = await getFileDL(reqDownloadOptions, url)
         logEntries = {...logEntries, ...newEntries}
+        }
+        else
+        {
+            console.log("ham wa schon");
+            i++;
+        }
+        if(i == ende)
+        {
+            let downloaded = JSON.stringify(files);
+            fs.writeFileSync('scannedadminlogs.json', downloaded);
+        }
+        else
+        {
+            console.log(i);
+            i++;
+        }
     }
 
     return logEntries

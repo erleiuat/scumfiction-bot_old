@@ -20,15 +20,15 @@ client.on('ready', () => {
         console.log(typeof data)
 
         for (const line in data) {
-            if (data[line].length >= 1 && !data[line].includes("Game version:")) {
-                console.log(data[line])
-                channel.send(
-                    formatter.adminLog(data[line])
-                ).then(
-                    console.log('sent')
-                );
+                if(data[line].length >= 1 && !data[line].includes("Game version:") && !data[line].includes("Teleport")) {
+                    //console.log(data[line])
+                        channel.send(
+                            formatter.adminLog(data[line])
+                        ).then(
+                            //console.log('sent')
+                        );
+                }
             }
-        }
 
         channel.send('I bims fini alla');
 
