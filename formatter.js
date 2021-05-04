@@ -47,6 +47,7 @@ function chatLog(line) {
     matches.forEach(match)
 
     function match(item, index, arr) {
+        
         console.log(arr[0])
         console.log(arr[2])
         console.log(arr[4])

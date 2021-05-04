@@ -70,8 +70,8 @@ function doKillLogs() {
                         console.log('sent: ' + formatted.key);
                     });
                 }
-               
-                
+
+
             }
 
         }
@@ -131,10 +131,18 @@ function doChatLogs() {
 client.on('ready', () => {
 
     console.log(`Logged in as ${client.user.tag}!`);
-
+    
     doChatLogs()
     doAdminLogs()
     doKillLogs()
+
+    setInterval(() => {
+
+        doChatLogs()
+        doAdminLogs()
+        doKillLogs()
+
+    }, 60000);
 
 });
 
