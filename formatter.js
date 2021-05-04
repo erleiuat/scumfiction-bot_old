@@ -31,9 +31,6 @@ function killLog(line) {
 
 }
 
-
-
-
 function chatLog(line) {
 
     let date = line.substring(0, 10)
@@ -52,7 +49,6 @@ function chatLog(line) {
         //console.log(playername);
     })
 
-
     let lineFormatted = `\`\`\`ini\nTime: [ ` + date + ` - ` + time + ` ] User: [ ` + playername + ` ]\nMessage: [ ` + message + ` ]  \`\`\``
 
     return {
@@ -61,8 +57,6 @@ function chatLog(line) {
     }
 
 }
-
-
 
 exports.adminLog = adminLog
 exports.killLog = killLog

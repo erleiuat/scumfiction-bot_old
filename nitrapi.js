@@ -65,9 +65,7 @@ async function getLogs(type = "chat") {
     }
 
     let downloadUrl = "https://api.nitrado.net/services/" + process.env.serverID + "/gameservers/file_server/download?file=/games/" + process.env.userID + "/noftp/scum/SCUM/Saved/SaveFiles/Logs/";
-
     files = await getFileList(reqListOptions, type)
-
     for (const file of files)
         logEntries = logEntries.concat(await getFileDL(reqDownloadOptions, downloadUrl + file));
 

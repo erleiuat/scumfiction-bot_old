@@ -131,20 +131,27 @@ function doChatLogs() {
 client.on('ready', () => {
 
     console.log(`Logged in as ${client.user.tag}!`);
-    
-    doChatLogs()
-    //doAdminLogs()
-    //doKillLogs()
 
-    /*
+    console.log('--------------------------------------')
+    let current = new Date();
+    console.log(current.toLocaleString())
+
+    //doChatLogs()
+    doAdminLogs()
+    doKillLogs()
+
+
     setInterval(() => {
 
-        doChatLogs()
+        console.log('--------------------------------------')
+        let current = new Date();
+        console.log(current.toLocaleString())
+
+        //doChatLogs()
         doAdminLogs()
         doKillLogs()
 
     }, 60000);
-    */
 
 });
 
