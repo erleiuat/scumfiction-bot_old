@@ -1,16 +1,7 @@
 const request = require('request');
+const iconv = require('iconv-lite');
 'use strict';
 
-function decodeUTF16LE(binaryStr) {
-    var cp = [];
-    for (var i = 0; i < binaryStr.length; i += 2) {
-        cp.push(
-            binaryStr.charCodeAt(i) |
-            (binaryStr.charCodeAt(i + 1) << 8)
-        );
-    }
-    return String.fromCharCode.apply(String, cp);
-}
 
 function getFileList(options, type) {
     return new Promise(resolve => {
@@ -45,13 +36,8 @@ function getFileDL(options, downloadUrl) {
             }, function (error, response) {
                 if (error) throw new Error(error);
 
-                console.log(response.body)
-                /*
-                value = decodeUTF16LE(response.body)
+                value = iconv.decode(new Buffer.from(response.body), 'utf16le')
                 resolve(value.split(/\r?\n/))
-                */
-
-                resolve()
 
             })
 

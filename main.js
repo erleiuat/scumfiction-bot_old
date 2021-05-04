@@ -15,6 +15,7 @@ function doAdminLogs() {
         let adminLog = JSON.parse(fs.readFileSync('scanned/adminLogs.json'));
 
         for (const line of data) {
+
             if (
                 line.length >= 1 &&
                 !line.includes("Game version:") &&
@@ -49,35 +50,74 @@ function doKillLogs() {
 
     nitrAPI.getLogs('kill').then(async data => {
 
-        console.log(data)
+        let killLog = JSON.parse(fs.readFileSync('scanned/killLog.json'));
 
-        /*
-        let adminLog = JSON.parse(fs.readFileSync('scanned/adminLogs.json'));
 
         for (const line of data) {
+
+
             if (
-                line.length >= 1 &&
-                !line.includes("Game version:") &&
-                !line.toLowerCase().includes("teleport")
+                line.slice(21, 22) == '{'
             ) {
 
-                let formatted = formatter.adminLog(line)
+                let formatted = formatter.killLog(line)
 
-                if (!adminLog[formatted.key]) {
+                if (!killLog[formatted.key]) {
                     await channel.send(
                         formatted.line
                     ).then(() => {
-                        adminLog[formatted.key] = formatted.line;
+                        killLog[formatted.key] = formatted.line;
                         console.log('sent: ' + formatted.key);
                     });
                 }
 
             }
+
         }
 
-        fs.writeFileSync('scanned/adminLogs.json', JSON.stringify(adminLog));
-        console.log('admin-log iteration finished')
-        */
+        fs.writeFileSync('scanned/killLog.json', JSON.stringify(killLog));
+        console.log('kill-log iteration finished')
+
+    })
+
+}
+
+
+function doChatLogs() {
+
+    const channel = client.channels.cache.find(channel => channel.id === "837344985334546448")
+
+    nitrAPI.getLogs('chat').then(async data => {
+
+        let chatLog = JSON.parse(fs.readFileSync('scanned/chatLog.json'));
+
+        for (const line of data) {
+
+            if (
+                line.length >= 1 &&
+                !line.includes("Game version:")
+            ) {
+
+                let formatted = formatter.chatLog(line)
+                //console.log()
+                /*
+                
+                if (!chatLog[formatted.key]) {
+                    await channel.send(
+                        formatted.line
+                    ).then(() => {
+                        chatLog[formatted.key] = formatted.line;
+                        console.log('sent: ' + formatted.key);
+                    });
+                }     
+                */
+
+            }
+
+        }
+
+        fs.writeFileSync('scanned/chatLog.json', JSON.stringify(chatLog));
+        console.log('chat-log iteration finished')
 
     })
 
@@ -88,8 +128,9 @@ client.on('ready', () => {
 
     console.log(`Logged in as ${client.user.tag}!`);
 
-    // doAdminLogs()
-    doKillLogs()
+    //doAdminLogs()
+    //doKillLogs()
+    doChatLogs()
 
 });
 
