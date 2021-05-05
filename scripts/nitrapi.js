@@ -77,5 +77,4 @@ async function getLogs(type = "chat") {
 
 }
 
-
 exports.getLogs = getLogs
