@@ -38,9 +38,9 @@ async function doInteration() {
         await loginLogs.doit(disiClient, ftp, nitrAPI, form)
         // await violationLogs.doit(disiClient)
 
-        console.log('Going to sleep for 1 Minute...')
+        console.log('Going to sleep for 5 Minutes...')
         console.log('--------------------------------------')
-        await sleep(60)
+        await sleep(300)
 
     } while (repeat)
 
