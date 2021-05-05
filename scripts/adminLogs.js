@@ -20,7 +20,8 @@ async function doit(disiClient, ftp, nitrAPI, form) {
             if (
                 line.length >= 1 &&
                 !line.includes("Game version:") &&
-                !line.toLowerCase().includes("teleport")
+                !line.toLowerCase().includes("teleport") &&
+                !line.toLowerCase().includes("location")
             ) {
 
                 let formatted = form.adminLog(line)
