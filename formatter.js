@@ -39,14 +39,14 @@ function chatLog(line) {
     let message = line.split("' '")[1]
 
     const regex = new RegExp(/([^:]*)/g);
-    const regexname = new RegExp(/(([^)]+))/gm);
+    const regexname = /\(([^)]+)\).*/gm;
     var matches = line.match(regex);
 
     matches.forEach(el => {
         console.log(el)
-        //var playerid = el[4].match(regexname);
-        //var playername = el[4].replace(playerid, '')
-        //console.log(playername);
+        var playerid = e1[4].match(regexname);
+        var playername = e1[4].replace(playerid, '');
+        return playername;
     })
 
     let lineFormatted = `\`\`\`ini\nTime: [ ` + date + ` - ` + time + ` ] User: [ ` + playername + ` ]\nMessage: [ ` + message + ` ]  \`\`\``
