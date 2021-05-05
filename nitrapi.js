@@ -34,7 +34,8 @@ function getFileDL(options, downloadUrl) {
             let resp = JSON.parse(response.body)
 
             request({
-                'url': resp.data.token.url
+                'url': resp.data.token.url,
+                'encoding': null,
             }, function (error, response) {
                 if (error) throw new Error(error);
 

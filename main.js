@@ -65,7 +65,7 @@ async function doAdminLogs() {
 
     await nitrAPI.getLogs('admin').then(async data => {
 
-        let adminLog = JSON.parse(fs.readFileSync('tmp/adminLogs.json'));
+        let log = JSON.parse(fs.readFileSync('tmp/adminLogs.json'));
 
         for (const line of data) {
 
@@ -77,21 +77,23 @@ async function doAdminLogs() {
 
                 let formatted = formatter.adminLog(line)
 
-                if (!adminLog[formatted.key]) {
-
+                if (!log[formatted.key]) {
                     await channel.send(
                         formatted.line
                     ).then(() => {
-                        adminLog[formatted.key] = formatted.line;
+                        log[formatted.key] = formatted.line;
                         console.log('sent: ' + formatted.key);
                     });
-
                 }
+
+                /*
+                log[formatted.key] = formatted.line;
+                */
 
             }
         }
 
-        fs.writeFileSync('tmp/adminLogs.json', JSON.stringify(adminLog))
+        fs.writeFileSync('tmp/adminLogs.json', JSON.stringify(log))
         await ftpUp('adminLogs.json')
 
         fs.unlink('tmp/adminLogs.json', (err) => {
@@ -112,11 +114,9 @@ async function doKillLogs() {
 
     await nitrAPI.getLogs('kill').then(async data => {
 
-        let killLog = JSON.parse(fs.readFileSync('tmp/killLogs.json'));
-
+        let log = JSON.parse(fs.readFileSync('tmp/killLogs.json'));
 
         for (const line of data) {
-
 
             if (
                 line.slice(21, 22) == '{'
@@ -124,20 +124,23 @@ async function doKillLogs() {
 
                 let formatted = formatter.killLog(line)
 
-                if (!killLog[formatted.key]) {
+                if (!log[formatted.key]) {
                     await channel.send(
                         formatted.line
                     ).then(() => {
-                        killLog[formatted.key] = formatted.line;
+                        log[formatted.key] = formatted.line;
                         console.log('sent: ' + formatted.key);
                     });
                 }
-                
-            }
 
+                /*
+                    log[formatted.key] = formatted.line;
+                */
+
+            }
         }
 
-        fs.writeFileSync('tmp/killLogs.json', JSON.stringify(killLog))
+        fs.writeFileSync('tmp/killLogs.json', JSON.stringify(log))
         await ftpUp('killLogs.json')
 
         fs.unlink('tmp/killLogs.json', (err) => {
@@ -157,7 +160,7 @@ async function doChatLogs() {
 
     await nitrAPI.getLogs('chat').then(async data => {
 
-        let chatLog = JSON.parse(fs.readFileSync('tmp/chatLogs.json'));
+        let log = JSON.parse(fs.readFileSync('tmp/chatLogs.json'));
 
         for (const line of data) {
 
@@ -169,21 +172,32 @@ async function doChatLogs() {
 
                 let formatted = formatter.chatLog(line)
 
+                if (!log[formatted.key]) {
+                    await channel.send(
+                        formatted.line
+                    ).then(() => {
+                        log[formatted.key] = formatted.line;
+                        console.log('sent: ' + formatted.key);
+                    });
+                }
+
+                /*
+                log[formatted.key] = formatted.line;
+                */
 
             }
 
         }
 
-        fs.writeFileSync('tmp/chatLogs.json', JSON.stringify(chatLog))
+        fs.writeFileSync('tmp/chatLogs.json', JSON.stringify(log))
         await ftpUp('chatLogs.json')
 
-        fs.unlink('tmp/chatLogs.json', (err) => {
+        await fs.unlink('tmp/chatLogs.json', (err) => {
             if (err) throw err;
             console.log('chatLogs iteration finished')
         })
 
     })
-
 }
 
 
@@ -193,11 +207,9 @@ async function doInteration() {
     let current = new Date();
     console.log(current.toLocaleString())
 
-    
     await doAdminLogs()
     await doKillLogs()
-    //await doChatLogs()
-    
+    await doChatLogs()
 
 }
 
