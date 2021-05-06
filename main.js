@@ -1,18 +1,15 @@
+require('dotenv').config()
 /*
 
 Start-Argumente:
-repeat      -> Script wiederholen
-t=500       -> Script wiederholen alle x Sekunden
-cache       -> Nicht jedes Mal alle Logs von Nitrado ziehen sondern nur die neusten
-noDiscord   -> Nicht auf Discord senden, sondern nur auf FTP speichern
+--repeat=500        -> Script wiederholen 
+--cache             -> Nicht jedes Mal alle Logs von Nitrado ziehen sondern nur die neusten
+--noDiscord         -> Nicht auf Discord senden, sondern nur auf FTP speichern
 
 */
 
-require('dotenv').config()
-const repeat = process.argv.includes('repeat')
-const repeatInterval = process.argv.indexOf('-t=')
-console.log(process.argv)
-console.log(repeatInterval)
+const args = require('minimist')(process.argv.slice(2))
+const repeat = false || args['repeat']
 
 
 const Discord = require('discord.js')
@@ -45,16 +42,16 @@ async function doInteration() {
         let current = new Date();
         console.log(current.toLocaleString())
 
-        //await killLogs.doit(disiClient, ftp, nitrAPI, form)
-        //await chatLogs.doit(disiClient, ftp, nitrAPI, form)
-        //await adminLogs.doit(disiClient, ftp, nitrAPI, form)
-        //await loginLogs.doit(disiClient, ftp, nitrAPI, form)
+        await killLogs.doit(disiClient, ftp, nitrAPI, form)
+        await chatLogs.doit(disiClient, ftp, nitrAPI, form)
+        await adminLogs.doit(disiClient, ftp, nitrAPI, form)
+        await loginLogs.doit(disiClient, ftp, nitrAPI, form)
         // await violationLogs.doit(disiClient)
 
         if (repeat) {
-            console.log('Going to sleep for ' +  + ' Seconds...')
+            console.log('Going to sleep for ' + repeat + ' Seconds...')
             console.log('--------------------------------------')
-            await sleep(300)
+            await sleep(repeat)
         }
 
     } while (repeat)
