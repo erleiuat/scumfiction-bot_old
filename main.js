@@ -11,6 +11,7 @@ const repeat = false || args['repeat']
 
 const Discord = require('discord.js')
 const disiClient = new Discord.Client()
+const nitrAPI = require('./scripts/nitrapi.js')
 
 const adminLogs = require('./scripts/adminLogs.js')
 const killLogs = require('./scripts/killLogs.js')
@@ -35,6 +36,7 @@ async function doInteration() {
         console.log(current.toLocaleString())
         console.log('----------------------------------------------\n')
 
+        await nitrAPI.loadLogs()
         await killLogs.doit(disiClient)
         await chatLogs.doit(disiClient)
         await adminLogs.doit(disiClient)
