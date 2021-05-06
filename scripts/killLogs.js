@@ -1,17 +1,20 @@
 const fs = require('fs')
+const ftp = require('./ftp.js')
+const nitrAPI = require('./nitrapi.js')
+const form = require('./form.js')
 const scriptName = 'kill_logs'
 
 
-async function doit(disiClient, ftp, nitrAPI, form) {
+async function doit(disiClient, args) {
 
     const channel = disiClient.channels.cache.find(channel => channel.id === "837295740581445682")
-    console.log(scriptName + ': iteration started, getting file by FTP...')
+    console.log('\n' + scriptName + ': iteration started, getting file by FTP...')
 
     await ftp.download('killLogs.json')
     let log = JSON.parse(fs.readFileSync('tmp/killLogs.json'));
-    console.log(scriptName + ': FTP-Download complete, getting Nitrado-Logs...')
+    console.log(scriptName + ': FTP-Download complete, getting Nitrado-Logs:')
 
-    await nitrAPI.getLogs('kill', true).then(async data => {
+    await nitrAPI.getLogs('kill', args['cache']).then(async data => {
 
         console.log(scriptName + ': Nitrado-Logs downloaded, processing data...')
 
@@ -22,10 +25,12 @@ async function doit(disiClient, ftp, nitrAPI, form) {
             ) {
 
                 let formatted = form.killLog(line)
-                if (!log[formatted.key]) await channel.send(formatted.line).then(() => {
-                    console.log('sent: ' + formatted.key);
-                });
-                
+                if (!log[formatted.key] && !args['nodiscord']) {
+                    await channel.send(formatted.line).then(() => {
+                        console.log('sent: ' + formatted.key);
+                    });
+                }
+
                 log[formatted.key] = formatted.line;
 
             }
@@ -40,7 +45,7 @@ async function doit(disiClient, ftp, nitrAPI, form) {
             if (err) throw err;
         })
 
-        console.log(scriptName + ': iteration done')
+        console.log(scriptName + ': iteration done\n\n')
 
     })
 

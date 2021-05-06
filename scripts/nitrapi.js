@@ -1,5 +1,6 @@
 const request = require('request');
 const iconv = require('iconv-lite');
+const scriptName = ' - nitrapi_comm'
 
 const fileCache = []
 
@@ -12,9 +13,7 @@ function getFileList(options, type) {
             let resp = JSON.parse(response.body);
 
             resp.data.entries.forEach(el => {
-                if (el.name.includes(type)) {
-                    values.push(el.name);
-                }
+                if (el.name.includes(type)) values.push(el.name)
             });
 
             resolve(values)
@@ -68,16 +67,24 @@ async function getLogs(type, newOnly = false) {
     }
 
     let downloadUrl = "https://api.nitrado.net/services/" + process.env.serverID + "/gameservers/file_server/download?file=/games/" + process.env.userID + "/noftp/scum/SCUM/Saved/SaveFiles/Logs/";
+
+    console.log(scriptName + ': Getting file-list...')
     files = await getFileList(reqListOptions, type)
+
+    let i = 0
+    console.log(scriptName + ': Processing files...')
     for (const file of files) {
         if (newOnly && !fileCache.includes(file)) {
             logEntries = logEntries.concat(await getFileDL(reqDownloadOptions, downloadUrl + file));
             fileCache.push(file)
+            i++
         } else if (!newOnly) {
             logEntries = logEntries.concat(await getFileDL(reqDownloadOptions, downloadUrl + file));
+            i++
         }
     }
 
+    console.log(scriptName + ': Processed '+i+' files.')
     return logEntries.sort()
 
 }

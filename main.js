@@ -11,14 +11,8 @@ Start-Argumente:
 const args = require('minimist')(process.argv.slice(2))
 const repeat = false || args['repeat']
 
-
 const Discord = require('discord.js')
-const fs = require('fs')
 const disiClient = new Discord.Client()
-
-const ftp = require('./scripts/ftp.js')
-const nitrAPI = require('./scripts/nitrapi.js')
-const form = require('./scripts/form.js')
 
 const adminLogs = require('./scripts/adminLogs.js')
 const killLogs = require('./scripts/killLogs.js')
@@ -38,19 +32,19 @@ async function doInteration() {
 
     do {
 
-        console.log('--------------------------------------')
+        console.log('\n----------------------------------------------')
         let current = new Date();
-        console.log(current.toLocaleString())
+        console.log(current.toLocaleString()+'\n')
 
-        await killLogs.doit(disiClient, ftp, nitrAPI, form)
-        await chatLogs.doit(disiClient, ftp, nitrAPI, form)
-        await adminLogs.doit(disiClient, ftp, nitrAPI, form)
-        await loginLogs.doit(disiClient, ftp, nitrAPI, form)
+        await killLogs.doit(disiClient, args)
+        await chatLogs.doit(disiClient, args)
+        await adminLogs.doit(disiClient, args)
+        await loginLogs.doit(disiClient, args)
         // await violationLogs.doit(disiClient)
 
         if (repeat) {
             console.log('Going to sleep for ' + repeat + ' Seconds...')
-            console.log('--------------------------------------')
+            console.log('----------------------------------------------\n')
             await sleep(repeat)
         }
 
@@ -61,7 +55,7 @@ async function doInteration() {
 
 disiClient.on('ready', () => {
 
-    console.log(`Logged in as ${disiClient.user.tag}!`)
+    console.log(`\nLogged in as ${disiClient.user.tag}!`)
     doInteration()
 
 });
