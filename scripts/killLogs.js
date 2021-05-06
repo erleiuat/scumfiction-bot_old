@@ -11,7 +11,7 @@ async function doit(disiClient, ftp, nitrAPI, form) {
     let log = JSON.parse(fs.readFileSync('tmp/killLogs.json'));
     console.log(scriptName + ': FTP-Download complete, getting Nitrado-Logs...')
 
-    await nitrAPI.getLogs('kill').then(async data => {
+    await nitrAPI.getLogs('kill', true).then(async data => {
 
         console.log(scriptName + ': Nitrado-Logs downloaded, processing data...')
 
@@ -22,19 +22,11 @@ async function doit(disiClient, ftp, nitrAPI, form) {
             ) {
 
                 let formatted = form.killLog(line)
-
-                if (!log[formatted.key]) {
-                    await channel.send(
-                        formatted.line
-                    ).then(() => {
-                        log[formatted.key] = formatted.line;
-                        console.log('sent: ' + formatted.key);
-                    });
-                }
-
-                /*
-                    log[formatted.key] = formatted.line;
-                */
+                if (!log[formatted.key]) await channel.send(formatted.line).then(() => {
+                    console.log('sent: ' + formatted.key);
+                });
+                
+                log[formatted.key] = formatted.line;
 
             }
         }

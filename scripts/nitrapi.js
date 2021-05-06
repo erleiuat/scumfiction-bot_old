@@ -1,8 +1,7 @@
 const request = require('request');
 const iconv = require('iconv-lite');
 
-'use strict';
-
+const fileCache = []
 
 function getFileList(options, type) {
     return new Promise(resolve => {
@@ -49,7 +48,7 @@ function getFileDL(options, downloadUrl) {
 }
 
 
-async function getLogs(type = "chat") {
+async function getLogs(type, newOnly = false) {
     let files = []
     let logEntries = []
 
@@ -70,8 +69,14 @@ async function getLogs(type = "chat") {
 
     let downloadUrl = "https://api.nitrado.net/services/" + process.env.serverID + "/gameservers/file_server/download?file=/games/" + process.env.userID + "/noftp/scum/SCUM/Saved/SaveFiles/Logs/";
     files = await getFileList(reqListOptions, type)
-    for (const file of files)
-        logEntries = logEntries.concat(await getFileDL(reqDownloadOptions, downloadUrl + file));
+    for (const file of files) {
+        if (newOnly && !fileCache.includes(file)) {
+            logEntries = logEntries.concat(await getFileDL(reqDownloadOptions, downloadUrl + file));
+            fileCache.push(file)
+        } else if (!newOnly) {
+            logEntries = logEntries.concat(await getFileDL(reqDownloadOptions, downloadUrl + file));
+        }
+    }
 
     return logEntries.sort()
 
