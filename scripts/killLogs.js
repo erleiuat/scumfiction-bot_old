@@ -7,14 +7,14 @@ const scriptName = 'kill_logs'
 const fileName = 'killLogs.json'
 
 
-async function doit(disiClient, args) {
+async function doit(disiClient) {
     const channel = disiClient.channels.cache.find(channel => channel.id === "837295740581445682")
     console.log('\n' + scriptName + ': iteration started, getting Nitrado-Logs:')
 
 
     try {
         // ----- Change log-type
-        await nitrAPI.getLogs('kill', args['cache']).then(async data => {
+        await nitrAPI.getLogs('kill').then(async data => {
             if (data.length > 0) {
                 console.log(scriptName + ': Nitrado-Logs downloaded, getting current state by FTP...')
                 await ftp.download(fileName)
@@ -26,7 +26,7 @@ async function doit(disiClient, args) {
                     ) {
                         // ----- Change form-method
                         let formatted = form.killLog(line)
-                        if (!log[formatted.key] && !args['nodiscord']) {
+                        if (!log[formatted.key]) {
                             await channel.send(formatted.line).then(() => {
                                 console.log('sent: ' + formatted.key);
                             });

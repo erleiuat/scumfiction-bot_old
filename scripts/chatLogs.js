@@ -7,13 +7,13 @@ const scriptName = 'chat_logs'
 const fileName = 'chatLogs.json'
 
 
-async function doit(disiClient, args) {
+async function doit(disiClient) {
     const channel = disiClient.channels.cache.find(channel => channel.id === "837344985334546448")
     console.log('\n' + scriptName + ': iteration started, getting file by FTP...')
 
     try {
         // ----- Change log-type
-        await nitrAPI.getLogs('chat', args['cache']).then(async data => {
+        await nitrAPI.getLogs('chat').then(async data => {
             if (data.length > 0) {
                 console.log(scriptName + ': Nitrado-Logs downloaded, getting current state by FTP...')
                 await ftp.download(fileName)
@@ -21,11 +21,13 @@ async function doit(disiClient, args) {
                 console.log(scriptName + ': FTP-Download complete, processing data...')
                 for (const line of data) {
                     if (
-                        line.slice(21, 22) == '{'
+                        line.length >= 1 &&
+                        !line.includes("Game version:") &&
+                        line.split("' '")[1].startsWith('Global:')
                     ) {
                         // ----- Change form-method
                         let formatted = form.chatLog(line)
-                        if (!log[formatted.key] && !args['nodiscord']) {
+                        if (!log[formatted.key]) {
                             await channel.send(formatted.line).then(() => {
                                 console.log('sent: ' + formatted.key);
                             });

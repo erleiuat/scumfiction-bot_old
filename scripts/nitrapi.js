@@ -47,7 +47,7 @@ function getFileDL(options, downloadUrl) {
 }
 
 
-async function getLogs(type, newOnly = false) {
+async function getLogs(type) {
     let files = []
     let logEntries = []
 
@@ -74,17 +74,15 @@ async function getLogs(type, newOnly = false) {
     let i = 0
     console.log(scriptName + ': Processing files...')
     for (const file of files) {
-        if (newOnly && !fileCache.includes(file)) {
+        if (!fileCache.includes(file)) {
+            console.log(scriptName + ': - NEW: ' + file)
             logEntries = logEntries.concat(await getFileDL(reqDownloadOptions, downloadUrl + file));
             fileCache.push(file)
             i++
-        } else if (!newOnly) {
-            logEntries = logEntries.concat(await getFileDL(reqDownloadOptions, downloadUrl + file));
-            i++
         }
     }
-
-    console.log(scriptName + ': Processed '+i+' files.')
+    
+    console.log(scriptName + ': Processed ' + i + ' new files.')
     return logEntries.sort()
 
 }

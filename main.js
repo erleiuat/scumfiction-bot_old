@@ -1,13 +1,11 @@
-require('dotenv').config()
 /*
 
 Start-Argumente:
---repeat=500        -> Script wiederholen 
---cache             -> Nicht jedes Mal alle Logs von Nitrado ziehen sondern nur die neusten
---noDiscord         -> Nicht auf Discord senden, sondern nur auf FTP speichern
+--repeat=500        -> Script wiederholen nach x Sekunden
 
 */
 
+require('dotenv').config()
 const args = require('minimist')(process.argv.slice(2))
 const repeat = false || args['repeat']
 
@@ -20,11 +18,13 @@ const chatLogs = require('./scripts/chatLogs.js')
 const loginLogs = require('./scripts/loginLogs.js')
 // const violationLogs = require('./scripts/violationLogs.js')
 
+
 function sleep(seconds) {
     return new Promise((resolve) => {
         setTimeout(resolve, seconds * 1000);
     });
 }
+
 
 async function doInteration() {
 
@@ -35,11 +35,11 @@ async function doInteration() {
         console.log(current.toLocaleString())
         console.log('----------------------------------------------\n')
 
-        await killLogs.doit(disiClient, args)
-        await chatLogs.doit(disiClient, args)
-        await adminLogs.doit(disiClient, args)
+        await killLogs.doit(disiClient)
+        await chatLogs.doit(disiClient)
+        await adminLogs.doit(disiClient)
+        await loginLogs.doit(disiClient)
         /*
-        await loginLogs.doit(disiClient, args)
         await violationLogs.doit(disiClient)
         */
 

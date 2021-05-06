@@ -79,10 +79,21 @@ function chatLog(line) {
 }
 
 function loginLog(line) {
+
+    let date = line.substring(0, 10).replace(/\./g, "-")
+    let time = line.substring(11, 19).replace(/\./g, ":")
+    let dateObj = new Date(date + 'T' + time)
+    dateObj.setHours(dateObj.getHours() + 2)
+    date = dateObj.getDate() + '.' + (dateObj.getMonth() + 1) + '.' + dateObj.getFullYear()
+    time = dateObj.getHours() + ':' + dateObj.getMinutes() + ':' + dateObj.getSeconds()
+
+    let lineFormatted = '\`\`\`ini\n[ Time ] ' + date + ' - ' + time + '\n[ Action ] ' + line.slice(20) + '\`\`\`'
+
     return {
-        'key': line,
-        'line': line
+        'key': line.replace(/\s/g, "").toLowerCase(),
+        'line': lineFormatted
     }
+
 }
 
 exports.adminLog = adminLog
