@@ -59,14 +59,24 @@ async function loadLogs() {
     return new Promise(resolve => {
         console.log(scriptName + ': Loading file-list...')
         request(reqListOptions, function (error, response) {
-            if (error) throw new Error(error);
-            fileList = []
-            let resp = JSON.parse(response.body);
-            resp.data.entries.forEach(el => {
-                fileList.push(el.name)
-            })
-            console.log(scriptName + ': Storing currrent file-list...')
-            resolve()
+            if (error) {
+                console.log(scriptName + ': There was an Error. Skipping...')
+                resolve(false)
+            } else {
+                let tmpFileList = []
+                let resp = JSON.parse(response.body);
+                resp.data.entries.forEach(el => {
+                    tmpFileList.push(el.name)
+                })
+                if (JSON.stringify(tmpFileList) == JSON.stringify(fileList)) {
+                    console.log(scriptName + ': There are no new files.\n')
+                    resolve(false)
+                } else {
+                    console.log(scriptName + ': New files detected.\n')
+                    fileList = tmpFileList
+                    resolve(true)
+                }
+            }
         })
     });
 }

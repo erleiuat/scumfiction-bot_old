@@ -20,6 +20,8 @@ const loginLogs = require('./scripts/loginLogs.js')
 // const violationLogs = require('./scripts/violationLogs.js')
 
 
+
+
 function sleep(seconds) {
     return new Promise((resolve) => {
         setTimeout(resolve, seconds * 1000);
@@ -36,14 +38,20 @@ async function doInteration() {
         console.log(current.toLocaleString())
         console.log('----------------------------------------------\n')
 
-        await nitrAPI.loadLogs()
-        await killLogs.doit(disiClient)
-        await chatLogs.doit(disiClient)
-        await adminLogs.doit(disiClient)
-        await loginLogs.doit(disiClient)
-        /*
-        await violationLogs.doit(disiClient)
-        */
+        try {
+
+            if (await nitrAPI.loadLogs()) {
+                await killLogs.doit(disiClient)
+                await chatLogs.doit(disiClient)
+                await adminLogs.doit(disiClient)
+                await loginLogs.doit(disiClient)
+            }
+            /*
+            await violationLogs.doit(disiClient)
+            */
+        } catch (err) {
+            console.log('There was an Error, skipping iteration. Errorr: ' + err)
+        }
 
         if (repeat) {
             console.log('Going to sleep for ' + repeat + ' Seconds...')
