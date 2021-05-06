@@ -2,57 +2,55 @@ const fs = require('fs')
 const ftp = require('./ftp.js')
 const nitrAPI = require('./nitrapi.js')
 const form = require('./form.js')
+
 const scriptName = 'admin_logs'
+const fileName = 'adminLogs.json'
 
 
 async function doit(disiClient, args) {
-
     const channel = disiClient.channels.cache.find(channel => channel.id === "838335232423624724")
     console.log('\n' + scriptName + ': iteration started, getting file by FTP...')
 
-    await ftp.download('adminLogs.json')
-    let log = JSON.parse(fs.readFileSync('tmp/adminLogs.json'));
-    console.log(scriptName + ': FTP-Download complete, getting Nitrado-Logs:')
 
-    await nitrAPI.getLogs('admin', args['cache']).then(async data => {
-
-        console.log(scriptName + ': Nitrado-Logs downloaded, processing data...')
-
-        for (const line of data) {
-
-            if (
-                line.length >= 1 &&
-                !line.includes("Game version:") &&
-                !line.toLowerCase().includes("teleport") &&
-                !line.toLowerCase().includes("location")
-            ) {
-
-                let formatted = form.adminLog(line)
-
-                if (!log[formatted.key] && !args['nodiscord']) {
-                    await channel.send(formatted.line).then(() => {
-                        console.log('sent: ' + formatted.key);
-                    });
+    try {
+        // ----- Change log-type
+        await nitrAPI.getLogs('admin', args['cache']).then(async data => {
+            if (data.length > 0) {
+                console.log(scriptName + ': Nitrado-Logs downloaded, getting current state by FTP...')
+                await ftp.download(fileName)
+                let log = JSON.parse(fs.readFileSync('tmp/' + fileName));
+                console.log(scriptName + ': FTP-Download complete, processing data...')
+                for (const line of data) {
+                    if (
+                        line.slice(21, 22) == '{'
+                    ) {
+                        // ----- Change form-method
+                        let formatted = form.adminLog(line)
+                        if (!log[formatted.key] && !args['nodiscord']) {
+                            await channel.send(formatted.line).then(() => {
+                                console.log('sent: ' + formatted.key);
+                            });
+                        }
+                        log[formatted.key] = formatted.line;
+                    }
                 }
-                
-                log[formatted.key] = formatted.line;
 
-            }
-        }
+                console.log(scriptName + ': Data processing complete, uploading File by FTP...')
+                fs.writeFileSync('tmp/' + fileName, JSON.stringify(log))
+                await ftp.upload(fileName)
+                fs.unlink('tmp/' + fileName, (err) => {
+                    if (err) throw err;
+                })
 
-        console.log(scriptName + ': Data processing complete, uploading File by FTP...')
-
-        fs.writeFileSync('tmp/adminLogs.json', JSON.stringify(log))
-        await ftp.upload('adminLogs.json')
-
-        await fs.unlink('tmp/adminLogs.json', (err) => {
-            if (err) throw err;
+            } else console.log(scriptName + ': Nitrado-Logs downloaded, no new Data to process...')
         })
-        
-        console.log(scriptName + ': iteration done\n\n')
 
-    })
+    } catch (error) {
+        console.log(scriptName + ': NitrAPI-Error, trying next time. Error:' + error)
+    }
 
+
+    console.log(scriptName + ': iteration done\n')
 }
 
 exports.doit = doit

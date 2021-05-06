@@ -30,7 +30,7 @@ function killLog(line) {
     dateObj.setHours(dateObj.getHours() + 2)
     date = dateObj.getDate() + '.' + (dateObj.getMonth() + 1) + '.' + dateObj.getFullYear()
     time = dateObj.getHours() + ':' + dateObj.getMinutes() + ':' + dateObj.getSeconds()
-    
+
     let content = JSON.parse(line.substring(21))
     let distance = 0;
 
@@ -39,11 +39,11 @@ function killLog(line) {
         var dy = content.Killer.ServerLocation.Y - content.Victim.ServerLocation.Y;
         var dz = content.Killer.ServerLocation.Z - content.Victim.ServerLocation.Z;
         var dist = Math.sqrt(Math.pow(dx, 2) + Math.pow(dy, 2) + Math.pow(dz, 2));
-        distance = Math.round(dist/100);
+        distance = Math.round(dist / 100);
     }
 
-    let lineFormatted = `\`\`\`ini\n[ Time ] ` + date + ` - ` + time + `\n[ Victim ] ` + content.Killer.ProfileName + `\n[ Killer ] ` + content.Victim.ProfileName + ` \n[ With ] ` + content.Weapon 
-    if(distance > 0) lineFormatted += `\n[ Distance ] ` + distance + `m `
+    let lineFormatted = `\`\`\`ini\n[ Time ] ` + date + ` - ` + time + `\n[ Victim ] ` + content.Killer.ProfileName + `\n[ Killer ] ` + content.Victim.ProfileName + ` \n[ With ] ` + content.Weapon
+    if (distance > 0) lineFormatted += `\n[ Distance ] ` + distance + `m `
     lineFormatted += `\`\`\``
 
     return {
@@ -61,7 +61,7 @@ function chatLog(line) {
     dateObj.setHours(dateObj.getHours() + 2)
     date = dateObj.getDate() + '.' + (dateObj.getMonth() + 1) + '.' + dateObj.getFullYear()
     time = dateObj.getHours() + ':' + dateObj.getMinutes() + ':' + dateObj.getSeconds()
-    
+
     let regexname = /\(([^)]+)\).*/gm;
     let steamID = line.substring(22, 39)
     let parts = line.split("' 'Global: ")
@@ -78,6 +78,14 @@ function chatLog(line) {
 
 }
 
+function loginLog(line) {
+    return {
+        'key': line,
+        'line': line
+    }
+}
+
 exports.adminLog = adminLog
 exports.killLog = killLog
 exports.chatLog = chatLog
+exports.loginLog = loginLog

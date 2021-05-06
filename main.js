@@ -20,31 +20,31 @@ const chatLogs = require('./scripts/chatLogs.js')
 const loginLogs = require('./scripts/loginLogs.js')
 // const violationLogs = require('./scripts/violationLogs.js')
 
-
 function sleep(seconds) {
     return new Promise((resolve) => {
         setTimeout(resolve, seconds * 1000);
     });
 }
 
-
 async function doInteration() {
 
     do {
 
-        console.log('\n----------------------------------------------')
         let current = new Date();
-        console.log(current.toLocaleString()+'\n')
+        console.log('\n----------------------------------------------')
+        console.log(current.toLocaleString())
+        console.log('----------------------------------------------\n')
 
         await killLogs.doit(disiClient, args)
         await chatLogs.doit(disiClient, args)
         await adminLogs.doit(disiClient, args)
+        /*
         await loginLogs.doit(disiClient, args)
-        // await violationLogs.doit(disiClient)
+        await violationLogs.doit(disiClient)
+        */
 
         if (repeat) {
             console.log('Going to sleep for ' + repeat + ' Seconds...')
-            console.log('----------------------------------------------\n')
             await sleep(repeat)
         }
 
@@ -52,13 +52,11 @@ async function doInteration() {
 
 }
 
-
 disiClient.on('ready', () => {
 
-    console.log(`\nLogged in as ${disiClient.user.tag}!`)
+    console.log(`\nLogged in as ${disiClient.user.tag}!\n`)
     doInteration()
 
 });
-
 
 disiClient.login(process.env.botToken);
