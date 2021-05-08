@@ -14,12 +14,14 @@ exports.start = async function start(dcClient) {
             if (error) {
                 console.log(error)
             } else {
-                let data = (JSON.parse(response.body)).data[0]
-                dcClient.user.setActivity(
-                    data.players + ' Players online | ' + data.time, {
-                        type: 'WATCHING'
-                    }
-                )
+                let data = JSON.parse(response.body)
+                if (data.data[0]) {
+                    dcClient.user.setActivity(
+                        data.data[0].players + ' Players online | ' + data.data[0].time, {
+                            type: 'WATCHING'
+                        }
+                    )
+                }
             }
         })
         await sleep(30)
