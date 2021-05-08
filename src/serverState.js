@@ -1,5 +1,5 @@
 const request = require('request')
-const scriptName = '- - > Logger: '
+const scriptName = '- - > ServerState: '
 
 
 function sleep(seconds) {
@@ -12,7 +12,7 @@ exports.start = async function start(dcClient) {
     do {
         request({
             'url': 'https://api.hellbz.de/scum/api.php?address=195.82.158.136&port=8017'
-        }, function (error, response) {
+        }, (error, response) => {
             if (error) {
                 console.log(error)
             } else {
@@ -28,6 +28,6 @@ exports.start = async function start(dcClient) {
                 }
             }
         })
-        await sleep(30)
+        await sleep(10)
     } while (true)
 }

@@ -1,5 +1,5 @@
 const fs = require('fs')
-const ftpClient = new(require("basic-ftp")).Client()
+const ftpClient = new(require('basic-ftp')).Client()
 
 const scriptName = '- - - > Check: '
 const checkFiles = {}

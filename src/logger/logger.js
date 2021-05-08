@@ -29,39 +29,37 @@ exports.start = async function start(dcClient, repeat, logs) {
 
         let tmpFiles = await nitrAPI.getFileList()
         if (tmpFiles.length < 1) console.log(scriptName + 'No content in filelist')
+        else if (JSON.stringify(fileList.sort()) == JSON.stringify(tmpFiles.sort())) console.log(scriptName + 'No new files detected.')
         else {
-            if (JSON.stringify(fileList.sort()) == JSON.stringify(tmpFiles.sort())) console.log(scriptName + 'No new files detected.')
-            else {
-                console.log(scriptName + 'New files detected!')
-                for (const log of logs) {
 
-                    console.log('\n\n' + scriptName + 'Starting processing of ' + log.toUpperCase() + '-log entries.')
-                    let channel = dcClient.channels.cache.find(channel => channel.id === channels[log])
-                    await check.prepare(log)
+            console.log(scriptName + 'New files detected!')
 
-                    let entries = []
-                    let lines = await nitrAPI.getLogLines(await filterList(log, tmpFiles))
-                    for (const line of lines) {
-                        if (filter.line(log, line)) entries.push(format.line(log, line))
+            for (const log of logs) {
+
+                console.log('\n\n' + scriptName + 'Starting processing of ' + log.toUpperCase() + '-log entries.')
+                let channel = dcClient.channels.cache.find(channel => channel.id === channels[log])
+                await check.prepare(log)
+
+                let entries = []
+                let lines = await nitrAPI.getLogLines(await filterList(log, tmpFiles))
+                for (const line of lines)
+                    if (filter.line(log, line)) entries.push(format.line(log, line))
+                entries.sort()
+
+                for (const entry of entries)
+                    if (!check.existing(log, entry)) {
+                        await channel.send(new Discord.MessageEmbed(entry.line))
+                        console.log(scriptName + 'Sent: ' + entry.key)
+                        check.add(log, entry)
                     }
 
-                    entries.sort()
-                    for (const entry of entries) {
-                        if (!check.existing(log, entry)) {
-                            await channel.send(new Discord.MessageEmbed(entry.line))
-                            console.log(scriptName + 'Sent: ' + entry.key)
-                            check.add(log, entry)
-                        }
-                    }
-
-                    await check.finish(log)
-                    console.log(scriptName + 'Processing of ' + log.toUpperCase() + '-log finished.\n\n')
-
-                }
-
-                fileList = tmpFiles
+                await check.finish(log)
+                console.log(scriptName + 'Processing of ' + log.toUpperCase() + '-log finished.\n')
 
             }
+
+            fileList = tmpFiles
+
         }
 
         console.log(scriptName + 'Going to sleep for ' + repeat + ' seconds.\n')

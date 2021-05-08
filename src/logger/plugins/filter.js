@@ -44,7 +44,7 @@ function violation(line) {
 
 function chat(line) {
     if (!defaultFilter(line)) return false
-    else if (!line.includes("' 'Global: ")) return false
+    else if (!line.includes('\' \'Global: ')) return false
     else return true
 }
 

@@ -2,7 +2,7 @@ const request = require('request')
 const iconv = require('iconv-lite')
 
 const scriptName = '- - - > NitrAPI: '
-let downloadURL = "https://api.nitrado.net/services/" + process.env.serverID + "/gameservers/file_server/download?file=/games/" + process.env.userID + "/noftp/scum/SCUM/Saved/SaveFiles/Logs/"
+let downloadURL = 'https://api.nitrado.net/services/' + process.env.serverID + '/gameservers/file_server/download?file=/games/' + process.env.userID + '/noftp/scum/SCUM/Saved/SaveFiles/Logs/'
 
 exports.getFileList = async function getFileList() {
     return new Promise((resolve) => {
@@ -12,25 +12,21 @@ exports.getFileList = async function getFileList() {
 
         request({
             'method': 'GET',
-            'url': "https://api.nitrado.net/services/" + process.env.serverID + "/gameservers/file_server/list?dir=/games/" + process.env.userID + "/noftp/scum/SCUM/Saved/SaveFiles/Logs/",
+            'url': 'https://api.nitrado.net/services/' + process.env.serverID + '/gameservers/file_server/list?dir=/games/' + process.env.userID + '/noftp/scum/SCUM/Saved/SaveFiles/Logs/',
             'headers': {
                 'Authorization': 'Bearer ' + process.env.apiToken
             }
-        }, function (error, response) {
+        }, (error, response) => {
             if (error) {
                 console.log(scriptName + 'there was an error while getting filelist. ' + error)
                 resolve(false)
             } else {
-
                 let data = (JSON.parse(response.body)).data.entries
-
                 data.forEach(file => {
                     fileList.push(file.name)
                 })
-
                 console.log(scriptName + 'Filelist download successful.')
                 resolve(fileList)
-
             }
         })
 
@@ -41,9 +37,7 @@ exports.getLogLines = async function getLogLines(fileList) {
     let lines = []
     for (const file of fileList) {
         let allLines = await downloadLogFile(file)
-        for (const line of allLines) {
-            lines.push(line)
-        }
+        for (const line of allLines) lines.push(line)
     }
     return (lines)
 }
@@ -58,7 +52,7 @@ async function downloadLogFile(name) {
             'headers': {
                 'Authorization': 'Bearer ' + process.env.apiToken
             }
-        }, function (error, response) {
+        }, (error, response) => {
             if (error) {
                 console.log(scriptName + 'there was an error while getting download-url for ' + name + '. ' + error)
                 resolve(false)
@@ -66,7 +60,7 @@ async function downloadLogFile(name) {
                 request({
                     'url': (JSON.parse(response.body)).data.token.url,
                     'encoding': null,
-                }, function (error, response) {
+                }, (error, response) => {
                     if (error) {
                         console.log(scriptName + 'there was an error while getting download-url for ' + name + '. ' + error)
                         resolve(false)

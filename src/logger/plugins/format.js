@@ -17,19 +17,19 @@ function admin(line) {
 
     let t = formTime(line)
     let steamID = line.substring(22, 39)
-    let command = "#" + line.split("Command: '")[1].slice(0, -1)
+    let command = '#' + line.split('Command: \'')[1].slice(0, -1)
     let username = (line.substring(40)).split('(')[0]
 
     return {
         'key': (t.date + '_' + t.time + '_' + steamID).replace(/:/g, '_').replace(/\./g, '_'),
         'line': {
-            "color": '000000',
-            "fields": [{
-                "name": username,
-                "value": command
+            'color': '000000',
+            'fields': [{
+                'name': username,
+                'value': command
             }],
-            "footer": {
-                "text": t.date + ` - ` + t.time
+            'footer': {
+                'text': t.date + ` - ` + t.time
             }
         }
     }
@@ -40,14 +40,14 @@ function kill(line) {
 
     let t = formTime(line)
     let content = JSON.parse(line.substring(21))
-    let distance = 0;
+    let distance = 0
 
     if (content.Killer.ServerLocation.X) {
-        var dx = content.Killer.ServerLocation.X - content.Victim.ServerLocation.X;
-        var dy = content.Killer.ServerLocation.Y - content.Victim.ServerLocation.Y;
-        var dz = content.Killer.ServerLocation.Z - content.Victim.ServerLocation.Z;
-        var dist = Math.sqrt(Math.pow(dx, 2) + Math.pow(dy, 2) + Math.pow(dz, 2));
-        distance = Math.round(dist / 100);
+        var dx = content.Killer.ServerLocation.X - content.Victim.ServerLocation.X
+        var dy = content.Killer.ServerLocation.Y - content.Victim.ServerLocation.Y
+        var dz = content.Killer.ServerLocation.Z - content.Victim.ServerLocation.Z
+        var dist = Math.sqrt(Math.pow(dx, 2) + Math.pow(dy, 2) + Math.pow(dz, 2))
+        distance = Math.round(dist / 100)
     }
 
     let l = {
@@ -68,7 +68,7 @@ function kill(line) {
             }
         ],
         'footer': {
-            "text": t.date + ` - ` + t.time
+            'text': t.date + ` - ` + t.time
         }
     }
 
@@ -97,10 +97,10 @@ function login(line) {
     return {
         'key': line.toLowerCase().replace(/:/g, '_').replace(/\./g, '_').replace(/\s/g, ''),
         'line': {
-            "color": '000000',
-            "description": content,
+            'color': '000000',
+            'description': content,
             'footer': {
-                "text": t.date + ` - ` + t.time
+                'text': t.date + ` - ` + t.time
             }
         }
     }
@@ -113,8 +113,8 @@ function violation(line) {
     return {
         'key': line.toLowerCase().replace(/:/g, '_').replace(/\./g, '_').replace(/\s/g, ''),
         'line': {
-            "color": '000000',
-            "description": line,
+            'color': '000000',
+            'description': line,
         }
     }
 }
@@ -123,7 +123,7 @@ function chat(line) {
 
     let t = formTime(line)
     let steamID = line.substring(22, 39)
-    let parts = line.split("' 'Global: ")
+    let parts = line.split('\' \'Global: ')
     let message = parts[1].slice(0, -1)
     let usernameID = parts[0].slice(40).match(regexname)
     let username = parts[0].slice(40).replace(usernameID, '')
@@ -131,13 +131,13 @@ function chat(line) {
     return {
         'key': (t.date + '_' + t.time + '_' + steamID).replace(/:/g, '_').replace(/\./g, '_'),
         'line': {
-            "color": '000000',
-            "fields": [{
-                "name": username,
-                "value": message
+            'color': '000000',
+            'fields': [{
+                'name': username,
+                'value': message
             }],
-            "footer": {
-                "text": t.date + ` - ` + t.time
+            'footer': {
+                'text': t.date + ` - ` + t.time
             }
         }
     }
@@ -150,8 +150,8 @@ function nZero(val) {
 }
 
 function formTime(line) {
-    let date = line.substring(0, 10).replace(/\./g, "-")
-    let time = line.substring(11, 19).replace(/\./g, ":")
+    let date = line.substring(0, 10).replace(/\./g, '-')
+    let time = line.substring(11, 19).replace(/\./g, ':')
     let d = new Date(date + 'T' + time)
     d.setHours(d.getHours() + 2)
     return {
