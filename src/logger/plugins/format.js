@@ -17,12 +17,12 @@ exports.line = function line(type, line) {
     }
 }
 
-async function hasImg(weapon) {
-    return new Promise((resolve) => {
-        if (weapon.includes('[')) weapon = weapon.split('[')[0].replace(/\s/g, '')
-        if (weaponImg.includes(weapon)) resolve(weaponImg[weapon])
-        else resolve(false)
-    })
+function hasImg(weapon) {
+    if (!weapon) return false
+    weapon = weapon.replace(/\s/g, '')
+    if (weapon.includes('[')) weapon = weapon.split('[')[0]
+    if (weaponImg.includes(weapon)) return weaponImg[weapon]
+    else return false
 }
 
 function admin(line) {
@@ -84,9 +84,10 @@ function kill(line) {
         }
     }
 
-    hasImg(content.Weapon).then(img => {
-        if (img) l.thumbnail.url = img
-    })
+    let img = hasImg(content.weapon)
+    if (img) l.thumbnail = {
+        url: img
+    }
 
     if (distance > 0) l.fields.push({
         'name': 'Distance',
@@ -125,7 +126,6 @@ function login(line) {
 }
 
 function violation(line) {
-    console.log(line)
     return {
         'key': line.toLowerCase().replace(/:/g, '_').replace(/\./g, '_').replace(/\s/g, ''),
         'line': {
