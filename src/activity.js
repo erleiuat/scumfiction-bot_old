@@ -1,4 +1,6 @@
 const request = require('request')
+const scriptName = '- - > Logger: '
+
 
 function sleep(seconds) {
     return new Promise((resolve) => {
@@ -14,13 +16,15 @@ exports.start = async function start(dcClient) {
             if (error) {
                 console.log(error)
             } else {
-                let data = JSON.parse(response.body)
-                if (data.data[0]) {
+                let data = (JSON.parse(response.body)).data
+                if (data && data.length > 0) {
                     dcClient.user.setActivity(
-                        data.data[0].players + ' Players online | ' + data.data[0].time, {
+                        data[0].players + ' Players online | ' + data[0].time, {
                             type: 'WATCHING'
                         }
                     )
+                } else {
+                    console.log(scriptName + 'Unable to read Server-Status')
                 }
             }
         })
