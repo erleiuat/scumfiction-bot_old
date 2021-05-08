@@ -16,7 +16,8 @@ dcClient.on('ready', () => {
     console.log(scriptName + `Logged in as ${dcClient.user.tag}!\n`)
 
     logger.start(dcClient, repeat, [
-        'kill', 'chat', 'admin', 'login', 'violation'
+        //'kill', 'chat', 'admin', 'login', 'violation'
+        'kill'
     ])
 
     state.start(dcClient)

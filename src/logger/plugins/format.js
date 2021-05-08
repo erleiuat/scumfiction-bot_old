@@ -1,6 +1,10 @@
 const scriptName = '- - - > Format: '
 const regexname = /\(([^)]+)\).*/gm
 
+const weaponImg = {
+    'BP_Weapon_MK18_C': 'https://scumfiction.com/bot_img/BP_Weapon_MK18.png'
+}
+
 exports.line = function line(type, line) {
     if (type == 'chat') return chat(line)
     else if (type == 'kill') return kill(line)
@@ -11,6 +15,14 @@ exports.line = function line(type, line) {
         console.log(scriptName + 'Log-type not recognized.')
         return false
     }
+}
+
+async function hasImg(weapon) {
+    return new Promise((resolve) => {
+        if (weapon.includes('[')) weapon = weapon.split('[')[0].replace(/\s/g, '')
+        if (weaponImg.includes(weapon)) resolve(weaponImg[weapon])
+        else resolve(false)
+    })
 }
 
 function admin(line) {
@@ -72,6 +84,10 @@ function kill(line) {
         }
     }
 
+    hasImg(content.Weapon).then(img => {
+        if (img) l.thumbnail.url = img
+    })
+
     if (distance > 0) l.fields.push({
         'name': 'Distance',
         'value': distance + ' Meters'
@@ -83,7 +99,7 @@ function kill(line) {
     }
 
     return {
-        'key': (t.date + '_' + t.time + '_' + content.Victim.UserId).replace(/:/g, '_').replace(/\./g, '_'),
+        'key': (t.date + '_' + t.time + '_' + content.Victim.UserId).replace(/:/g, '_').replace(/\./g, '_').replace(/\s/g, ''),
         'line': l
     }
 
