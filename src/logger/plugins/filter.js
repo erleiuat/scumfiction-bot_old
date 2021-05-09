@@ -17,13 +17,14 @@ exports.line = function line(type, line) {
 function admin(line) {
     if (!defaultFilter(line)) return false
     else if (
-        line.toLowerCase().includes('chris p. bacon') ||
-        line.toLowerCase().includes('lox') ||
-        line.toLowerCase().includes('tjvirus')
+        line.toLowerCase().includes('76561198058320009:chris p. bacon') ||
+        line.toLowerCase().includes('76561198082374095:lox') ||
+        line.toLowerCase().includes('76561198907112461:tjvirus80')
     ) {
         if (line.toLowerCase().includes('teleport')) return false
         else if (line.toLowerCase().includes('location')) return false
         else if (line.toLowerCase().includes('spawn')) return false
+        else if (line.toLowerCase().includes('showotherplayerinfo')) return false
         else if (line.toLowerCase().includes('godmode')) return false
     } else return true
 }
