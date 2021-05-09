@@ -14,6 +14,33 @@ exports.line = function line(type, line) {
     }
 }
 
+exports.allLines = function allLines(allLines) {
+
+    let newLines = []
+    allLines.sort((a, b) => {
+        if (a.content < b.content) return -1
+        if (a.content > b.content) return 1
+        return 0
+    })
+
+    for (const line of allLines) {
+        let color = 'ffffff'
+        if (line.type == 'kill') color = 'ff0000'
+        else if (line.type == 'chat') color = '0000ff'
+        else if (line.type == 'admin') color = '00ff00'
+        else if (line.type == 'login') color = '242424'
+        else if (line.type == 'violation') color = 'ffff00'
+        newLines.push({
+            color: color,
+            type: line.type,
+            content: line.content
+        })
+    }
+
+    return newLines
+
+}
+
 function hasImg(weapon) {
     if (!weapon) return false
     if (weapon.includes('[')) weapon = weapon.split('[')[0].replace(/\s/g, '')

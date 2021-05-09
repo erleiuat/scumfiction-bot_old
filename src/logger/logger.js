@@ -9,7 +9,8 @@ const channels = {
     chat: process.env.channel_chat,
     login: process.env.channel_login,
     violation: process.env.channel_violation,
-    admin: process.env.channel_admin
+    admin: process.env.channel_admin,
+    scum: process.env.channel_scum
 }
 
 function sleep(seconds) {
@@ -34,6 +35,7 @@ exports.start = async function start(dcClient, repeat, logs) {
 
             console.log(scriptName + 'New files detected!')
 
+            let allLines = []
             let newFiles = []
             for (const file of tmpFiles)
                 if (!fileList.includes(file)) newFiles.push(file)
@@ -46,8 +48,14 @@ exports.start = async function start(dcClient, repeat, logs) {
 
                 let entries = []
                 let lines = await nitrAPI.getLogLines(await filterList(log, newFiles))
-                for (const line of lines)
+                for (const line of lines) {
                     if (filter.line(log, line)) entries.push(format.line(log, line))
+                    allLines.push({
+                        type: log,
+                        content: line
+                    })
+                }
+
                 entries.sort()
 
                 for (const entry of entries)
@@ -63,6 +71,16 @@ exports.start = async function start(dcClient, repeat, logs) {
             }
 
             fileList = tmpFiles
+            allLines = format.allLines(allLines)
+            let channel = dcClient.channels.cache.find(channel => channel.id === channels.scum)
+
+            for (const line of allLines) await channel.send(new Discord.MessageEmbed({
+                color: line.color,
+                footer: {
+                    text: line.type.toUpperCase()
+                },
+                description: line.content
+            }))
 
         }
 

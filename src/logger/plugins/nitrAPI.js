@@ -37,7 +37,8 @@ exports.getLogLines = async function getLogLines(fileList) {
     let lines = []
     for (const file of fileList) {
         let allLines = await downloadLogFile(file)
-        for (const line of allLines) lines.push(line)
+        for (const line of allLines)
+            if (line && line.length >= 10 && !line.includes('Game version:')) lines.push(line)
     }
     return (lines)
 }
