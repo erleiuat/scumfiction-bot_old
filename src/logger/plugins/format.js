@@ -1,9 +1,6 @@
+const wpImg = require('./weaponList.js').image
 const scriptName = '- - - > Format: '
 const regexname = /\(([^)]+)\).*/gm
-
-const weaponImg = {
-    'BP_Weapon_MK18_C': 'https://scumfiction.com/bot_img/BP_Weapon_MK18.png'
-}
 
 exports.line = function line(type, line) {
     if (type == 'chat') return chat(line)
@@ -19,10 +16,8 @@ exports.line = function line(type, line) {
 
 function hasImg(weapon) {
     if (!weapon) return false
-    weapon = weapon.replace(/\s/g, '')
-    if (weapon.includes('[')) weapon = weapon.split('[')[0]
-    if (weaponImg.includes(weapon)) return weaponImg[weapon]
-    else return false
+    if (weapon.includes('[')) weapon = weapon.split('[')[0].replace(/\s/g, '')
+    if (wpImg[weapon]) return process.env.weapon_img_url + wpImg[weapon]
 }
 
 function admin(line) {
@@ -84,7 +79,7 @@ function kill(line) {
         }
     }
 
-    let img = hasImg(content.weapon)
+    let img = hasImg(content.Weapon)
     if (img) l.thumbnail = {
         url: img
     }

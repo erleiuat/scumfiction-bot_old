@@ -16,12 +16,15 @@ exports.line = function line(type, line) {
 
 function admin(line) {
     if (!defaultFilter(line)) return false
-    else if (line.toLowerCase().includes('teleport')) return false
-    else if (line.toLowerCase().includes('location')) return false
-    else if (line.toLowerCase().includes('spawn') || line.toLowerCase().includes('godmode')) {
-        if (line.toLowerCase().includes('chris p. bacon')) return false
-        else if (line.toLowerCase().includes('lox')) return false
-        else if (line.toLowerCase().includes('tjvirus')) return false
+    else if (
+        line.toLowerCase().includes('chris p. bacon') ||
+        line.toLowerCase().includes('lox') ||
+        line.toLowerCase().includes('tjvirus')
+    ) {
+        if (line.toLowerCase().includes('teleport')) return false
+        else if (line.toLowerCase().includes('location')) return false
+        else if (line.toLowerCase().includes('spawn')) return false
+        else if (line.toLowerCase().includes('godmode')) return false
     } else return true
 }
 

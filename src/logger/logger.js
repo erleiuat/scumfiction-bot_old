@@ -34,6 +34,10 @@ exports.start = async function start(dcClient, repeat, logs) {
 
             console.log(scriptName + 'New files detected!')
 
+            let newFiles = []
+            for (const file of tmpFiles)
+                if (!fileList.includes(file)) newFiles.push(file)
+
             for (const log of logs) {
 
                 console.log('\n\n' + scriptName + 'Starting processing of ' + log.toUpperCase() + '-log entries.')
@@ -41,7 +45,7 @@ exports.start = async function start(dcClient, repeat, logs) {
                 await check.prepare(log)
 
                 let entries = []
-                let lines = await nitrAPI.getLogLines(await filterList(log, tmpFiles))
+                let lines = await nitrAPI.getLogLines(await filterList(log, newFiles))
                 for (const line of lines)
                     if (filter.line(log, line)) entries.push(format.line(log, line))
                 entries.sort()
@@ -53,7 +57,7 @@ exports.start = async function start(dcClient, repeat, logs) {
                         check.add(log, entry)
                     }
 
-                //await check.finish(log)
+                await check.finish(log)
                 console.log(scriptName + 'Processing of ' + log.toUpperCase() + '-log finished.\n')
 
             }

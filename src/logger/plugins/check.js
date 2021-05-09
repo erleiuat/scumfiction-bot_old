@@ -13,14 +13,11 @@ const ftpCreds = {
 exports.prepare = async function prepare(type) {
     console.log(scriptName + 'Getting state by FTP')
     let check = await download(type + '.json')
-    if (check && check.code == 550) {
-        fs.writeFile('tmp/' + type + '.json', '{}', (error) => {
-            if (error) console.log(scriptName + 'There was an error creating file ' + type + '. ' + error)
-            else checkFiles[type] = {}
-        })
-    } else {
-        checkFiles[type] = JSON.parse(fs.readFileSync('tmp/' + type + '.json'))
-    }
+    if (check && check.code == 550) fs.writeFile('tmp/' + type + '.json', '{}', (error) => {
+        if (error) console.log(scriptName + 'There was an error creating file ' + type + '. ' + error)
+        else checkFiles[type] = {}
+    })
+    else checkFiles[type] = JSON.parse(fs.readFileSync('tmp/' + type + '.json'))
     console.log(scriptName + 'Download complete.')
 }
 
