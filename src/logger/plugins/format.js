@@ -30,10 +30,12 @@ exports.allLines = function allLines(allLines) {
         else if (line.type == 'admin') color = '00ff00'
         else if (line.type == 'login') color = '242424'
         else if (line.type == 'violation') color = 'ffff00'
+        let d = formTime(line.content)
         newLines.push({
             color: color,
             type: line.type,
-            content: line.content
+            time: d.date + ' - ' + d.time,
+            content: line.content.slice(20)
         })
     }
 

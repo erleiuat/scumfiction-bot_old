@@ -10,7 +10,7 @@ const channels = {
     login: process.env.channel_login,
     violation: process.env.channel_violation,
     admin: process.env.channel_admin,
-    scum: process.env.channel_scum
+    dump: process.env.channel_dump
 }
 
 function sleep(seconds) {
@@ -20,9 +20,7 @@ function sleep(seconds) {
 }
 
 exports.start = async function start(dcClient, repeat, logs) {
-
     let fileList = []
-
     do {
 
         console.log('-------------------------------------------------------------------------')
@@ -34,14 +32,12 @@ exports.start = async function start(dcClient, repeat, logs) {
         else {
 
             console.log(scriptName + 'New files detected!')
-
             let allLines = []
             let newFiles = []
             for (const file of tmpFiles)
                 if (!fileList.includes(file)) newFiles.push(file)
 
             for (const log of logs) {
-
                 console.log('\n\n' + scriptName + 'Starting processing of ' + log.toUpperCase() + '-log entries.')
                 let channel = dcClient.channels.cache.find(channel => channel.id === channels[log])
                 await check.prepare(log)
@@ -61,7 +57,7 @@ exports.start = async function start(dcClient, repeat, logs) {
                 for (const entry of entries)
                     if (!check.existing(log, entry)) {
                         await channel.send(new Discord.MessageEmbed(entry.line))
-                        console.log(scriptName + 'Sent: ' + entry.key)
+                        console.log(scriptName + 'Sent "' + log.toUpperCase() + '": ' + entry.key)
                         check.add(log, entry)
                     }
 
@@ -71,16 +67,20 @@ exports.start = async function start(dcClient, repeat, logs) {
             }
 
             fileList = tmpFiles
+            console.log(scriptName + 'Writing everything into dump-channel...')
             allLines = format.allLines(allLines)
-            let channel = dcClient.channels.cache.find(channel => channel.id === channels.scum)
+            let channel = dcClient.channels.cache.find(channel => channel.id === channels.dump)
 
-            for (const line of allLines) await channel.send(new Discord.MessageEmbed({
-                color: line.color,
-                footer: {
-                    text: line.type.toUpperCase()
-                },
-                description: line.content
-            }))
+            for (const line of allLines) {
+                await channel.send(new Discord.MessageEmbed({
+                    color: line.color,
+                    footer: {
+                        text: line.type.toUpperCase()
+                    },
+                    description: line.content
+                }))
+                console.log(scriptName + 'Sent "DUMP": ' + line.type)
+            }
 
         }
 
