@@ -75,7 +75,7 @@ exports.start = async function start(dcClient, repeat, logs) {
                 await channel.send(new Discord.MessageEmbed({
                     color: line.color,
                     footer: {
-                        text: line.type.toUpperCase() + ': ' + line.date
+                        text: line.type.toUpperCase() + ': ' + line.time
                     },
                     description: line.content
                 }))
