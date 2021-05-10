@@ -1,4 +1,4 @@
-const scriptName = '- - - > Filter: '
+const scriptName = '[LOGGER] -> Filter: '
 const regexname = /\(([^)]+)\).*/gm
 
 exports.line = function line(type, line) {

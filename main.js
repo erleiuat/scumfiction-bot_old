@@ -1,27 +1,33 @@
-require('dotenv').config()
-// --repeat=15        -> Script wiederholen nach x Sekunden
+/* 
+    --logger        -> Logger verwenden   
+    --repeat=15     -> Logger-Script wiederholen nach x Sekunden
+    --state         -> Serverstatus anzeigen
+    --statistics    -> Spielerstatistiken generieren
+*/
 
+
+require('dotenv').config()
 const Discord = require('discord.js')
 const dcClient = new Discord.Client()
 const args = require('minimist')(process.argv.slice(2))
 
 const statistics = require.main.require('./src/statistics.js')
 const logger = require.main.require('./src/logger.js')
-const state = require.main.require('./src/serverState.js')
+const state = require.main.require('./src/state.js')
 
-const scriptName = '- > Main: '
+const scriptName = '[MAIN] -> '
 
 dcClient.on('ready', () => {
 
     console.log(scriptName + `Logged in as ${dcClient.user.tag}!\n`)
 
-    logger.start(dcClient, args['repeat'], [
+    if (args['logger']) logger.start(dcClient, args['repeat'] || 15, [
         'kill', 'chat', 'admin', 'login', 'violation'
     ])
 
-    state.start(dcClient)
+    if (args['state']) state.start(dcClient)
 
-    statistics.start(dcClient)
+    if (args['statistics']) statistics.start(dcClient)
 
 })
 

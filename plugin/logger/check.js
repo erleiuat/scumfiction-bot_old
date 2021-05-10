@@ -1,7 +1,7 @@
 const fs = require('fs')
 const ftp = require.main.require('./plugin/ftp.js')
 const ftpClient = ftp.client()
-const scriptName = '- - - > Check: '
+const scriptName = '[LOGGER] -> Check: '
 
 
 const checkFiles = {}

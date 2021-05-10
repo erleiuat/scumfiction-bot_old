@@ -1,6 +1,6 @@
 const request = require('request')
 const sleep = require.main.require('./plugin/sleep.js')
-const scriptName = '- - > ServerState: '
+const scriptName = '[STATE] -> '
 
 
 exports.start = async function start(dcClient) {

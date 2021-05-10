@@ -4,7 +4,7 @@ const format = require.main.require('./plugin/logger/format.js')
 const filter = require.main.require('./plugin/logger/filter.js')
 const check = require.main.require('./plugin/logger/check.js')
 const sleep = require.main.require('./plugin/sleep.js')
-const scriptName = '- - > Logger: '
+const scriptName = '[LOGGER] -> '
 const channels = {
     kill: process.env.channel_kill,
     chat: process.env.channel_chat,

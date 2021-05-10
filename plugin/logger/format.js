@@ -1,5 +1,5 @@
 const wpImg = require.main.require('./plugin/logger/weaponList.js').image
-const scriptName = '- - - > Format: '
+const scriptName = '[LOGGER] -> Format: '
 const regexname = /\(([^)]+)\).*/gm
 
 exports.line = function line(type, line) {

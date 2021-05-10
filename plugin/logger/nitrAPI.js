@@ -1,7 +1,7 @@
 const request = require('request')
 const iconv = require('iconv-lite')
+const scriptName = '[LOGGER] -> NitrAPI: '
 
-const scriptName = '- - - > NitrAPI: '
 let downloadURL = 'https://api.nitrado.net/services/' + process.env.server_id + '/gameservers/file_server/download?file=/games/' + process.env.user_id + '/noftp/scum/SCUM/Saved/SaveFiles/Logs/'
 
 exports.getFileList = async function getFileList() {
