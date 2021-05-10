@@ -10,28 +10,69 @@ const regexID = /\(([^)]+)\)/
 const regexName = /\:(.*?)\(/
 let users = []
 let listCache = []
+let updates = false
 
 exports.start = async function start(dcClient) {
+
+    let iteration = 1
     let channel = dcClient.channels.cache.find(channel => channel.id === process.env.channel_playtime)
+    let channelHidden = dcClient.channels.cache.find(channel => channel.id === process.env.channel_hiddenstats)
+
     do {
-        console.log(scriptName + 'Processing Stats')
+        console.log(scriptName + 'Processing Stats (#' + iteration + ')')
         await updateTimes()
         await updateDC(channel)
+        if (iteration % 2) await updateHidden(channelHidden)
         console.log(scriptName + 'Processing Stats done')
+        iteration++
         await sleep.timer(60)
     } while (true)
+
+}
+
+async function updateHidden(channel) {
+    if (updates) {
+        updates = false
+        let fetched
+        do {
+            fetched = await channel.messages.fetch({
+                limit: 100
+            })
+            channel.bulkDelete(fetched)
+        } while (fetched.size >= 2)
+
+        let hiddenArray = []
+        for (u in users) {
+            hiddenArray.push({
+                steamID: u,
+                ...users[u]
+            })
+        }
+        hiddenArray.sort((a, b) => (a.login.getTime() > b.login.getTime()) ? 1 : -1)
+        for (let i = 0; i < hiddenArray.length; i++) {
+            let user = hiddenArray[i];
+            let formed = getDuration(user.playtime)
+            await channel.send(new Discord.MessageEmbed({
+                title: user.name,
+                description: 'SteamID: ' + user.steamID + '\nPlaytime: ' + formed.d + 'd ' + formed.h + 'h ' + formed.m + 'm \nLast Login: ' + user.login.toLocaleString() + '\nTotal Logins: ' + user.totalLogins
+            }))
+        }
+    }
 }
 
 async function updateDC(channel) {
 
     let usersArray = []
-    for (u in users)
+    for (u in users) {
         if (!admins.includes(u)) usersArray.push(users[u])
+    }
 
     usersArray.sort((a, b) => (a.playtime > b.playtime) ? 1 : -1).reverse()
     if (JSON.stringify(listCache) != JSON.stringify(usersArray)) {
 
+        updates = true
         let fetched
+
         do {
             fetched = await channel.messages.fetch({
                 limit: 100
@@ -41,6 +82,7 @@ async function updateDC(channel) {
 
         await sendList(channel, usersArray)
         listCache = usersArray
+
     }
 
 }
@@ -72,8 +114,7 @@ async function sendList(channel, list) {
         footer: {
             text: list[2].totalLogins + ' Logins'
         },
-        fields: [
-            {
+        fields: [{
                 name: 'Days',
                 value: pTime.d,
                 inline: true
@@ -196,7 +237,6 @@ async function updateTimes() {
             for (u in users)
                 if (users[u].tmpID == tmpID) {
                     users[u].playtime += date.getTime() - users[u].login.getTime()
-                    users[u].login = null
                     users[u].tmpID = null
                     break;
                 }
@@ -204,15 +244,14 @@ async function updateTimes() {
         }
 
     }
-}
 
+}
 
 function formDate(dateStr) {
     let dp = dateStr.split(' - ')
     dp[0] = dp[0].split('.')
     return new Date(dp[0][2] + '-' + dp[0][1] + '-' + dp[0][0] + 'T' + dp[1])
 }
-
 
 async function getLogins() {
     try {
@@ -224,34 +263,3 @@ async function getLogins() {
     ftpClient.close()
     return JSON.parse(fs.readFileSync('tmp/loginStats.json'))
 }
-
-
-
-
-/*
-
-
-
-
-"2021_05_09-15_24_12_'77_20_26_22476561198082374095_lox(23)'loggedin": {
-    color: '000000',
-    description: " '77.20.26.224 76561198082374095:Lox(23)' logged in",
-    footer: { text: '09.05.2021 - 17:24:12' }
-  },
-
-
-  "2021_05_09-16_00_31_'19'loggingout": {
-    color: '000000',
-    description: " '19' logging out",
-    footer: { text: '09.05.2021 - 18:00:31' }
-  }
-
-
-  "2021_05_09-15_33_52_'23'loggingout": {
-    color: '000000',
-    description: " '23' logging out",
-    footer: { text: '09.05.2021 - 17:33:52' }
-  },
-
-
-  */
