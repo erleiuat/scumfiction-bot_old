@@ -59,7 +59,7 @@ exports.start = async function start(dcClient, repeat, logs) {
                     }
 
                 await check.finish(log)
-                console.log(scriptName + 'Processing of ' + log.toUpperCase() + '-log finished.\n')
+                console.log(scriptName + 'Processing of ' + log.toUpperCase() + '-log finished.')
 
             }
 
