@@ -15,12 +15,11 @@ dcClient.on('ready', () => {
 
     console.log(scriptName + `Logged in as ${dcClient.user.tag}!\n`)
 
-    /*
     logger.start(dcClient, args['repeat'], [
         'kill', 'chat', 'admin', 'login', 'violation'
     ])
+    
     state.start(dcClient)
-    */
 
     statistics.start(dcClient)
 
