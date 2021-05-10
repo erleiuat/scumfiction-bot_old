@@ -1,14 +1,10 @@
 const fs = require('fs')
-const ftpClient = new(require('basic-ftp')).Client()
-
+const ftp = require.main.require('./plugin/ftp.js')
+const ftpClient = ftp.client()
 const scriptName = '- - - > Check: '
+
+
 const checkFiles = {}
-const ftpCreds = {
-    host: 'malta.metanet.ch',
-    user: process.env.ftpUser,
-    password: process.env.ftpPass,
-    secure: true
-}
 
 exports.prepare = async function prepare(type) {
     console.log(scriptName + 'Getting state by FTP')
@@ -42,7 +38,7 @@ exports.finish = async function finish(type) {
 
 async function download(name) {
     try {
-        await ftpClient.access(ftpCreds)
+        await ftpClient.access(ftp.credentials)
         await ftpClient.downloadTo('tmp/' + name, 'logs/' + name)
     } catch (error) {
         return (error)
@@ -52,7 +48,7 @@ async function download(name) {
 
 async function upload(name) {
     try {
-        await ftpClient.access(ftpCreds)
+        await ftpClient.access(ftp.credentials)
         await ftpClient.uploadFrom('tmp/' + name, 'logs/' + name)
     } catch (error) {
         console.log(error)

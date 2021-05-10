@@ -1,12 +1,7 @@
 const request = require('request')
+const sleep = require.main.require('./plugin/sleep.js')
 const scriptName = '- - > ServerState: '
 
-
-function sleep(seconds) {
-    return new Promise((resolve) => {
-        setTimeout(resolve, seconds * 1000)
-    })
-}
 
 exports.start = async function start(dcClient) {
     do {
@@ -35,6 +30,6 @@ exports.start = async function start(dcClient) {
                 }
             }
         })
-        await sleep(10)
+        await sleep.timer(10)
     } while (true)
 }

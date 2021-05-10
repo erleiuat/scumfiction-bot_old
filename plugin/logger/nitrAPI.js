@@ -2,7 +2,7 @@ const request = require('request')
 const iconv = require('iconv-lite')
 
 const scriptName = '- - - > NitrAPI: '
-let downloadURL = 'https://api.nitrado.net/services/' + process.env.serverID + '/gameservers/file_server/download?file=/games/' + process.env.userID + '/noftp/scum/SCUM/Saved/SaveFiles/Logs/'
+let downloadURL = 'https://api.nitrado.net/services/' + process.env.server_id + '/gameservers/file_server/download?file=/games/' + process.env.user_id + '/noftp/scum/SCUM/Saved/SaveFiles/Logs/'
 
 exports.getFileList = async function getFileList() {
     return new Promise((resolve) => {
@@ -12,9 +12,9 @@ exports.getFileList = async function getFileList() {
 
         request({
             'method': 'GET',
-            'url': 'https://api.nitrado.net/services/' + process.env.serverID + '/gameservers/file_server/list?dir=/games/' + process.env.userID + '/noftp/scum/SCUM/Saved/SaveFiles/Logs/',
+            'url': 'https://api.nitrado.net/services/' + process.env.server_id + '/gameservers/file_server/list?dir=/games/' + process.env.user_id + '/noftp/scum/SCUM/Saved/SaveFiles/Logs/',
             'headers': {
-                'Authorization': 'Bearer ' + process.env.apiToken
+                'Authorization': 'Bearer ' + process.env.api_token
             }
         }, (error, response) => {
             if (error) {
@@ -51,7 +51,7 @@ async function downloadLogFile(name) {
             'method': 'GET',
             'url': downloadURL + name,
             'headers': {
-                'Authorization': 'Bearer ' + process.env.apiToken
+                'Authorization': 'Bearer ' + process.env.api_token
             }
         }, (error, response) => {
             if (error) {

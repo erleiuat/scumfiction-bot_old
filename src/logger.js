@@ -1,8 +1,9 @@
 const Discord = require('discord.js')
-const nitrAPI = require('./plugins/nitrAPI.js')
-const format = require('./plugins/format.js')
-const filter = require('./plugins/filter.js')
-const check = require('./plugins/check.js')
+const nitrAPI = require.main.require('./plugin/logger/nitrAPI.js')
+const format = require.main.require('./plugin/logger/format.js')
+const filter = require.main.require('./plugin/logger/filter.js')
+const check = require.main.require('./plugin/logger/check.js')
+const sleep = require.main.require('./plugin/sleep.js')
 const scriptName = '- - > Logger: '
 const channels = {
     kill: process.env.channel_kill,
@@ -13,18 +14,14 @@ const channels = {
     dump: process.env.channel_dump
 }
 
-function sleep(seconds) {
-    return new Promise((resolve) => {
-        setTimeout(resolve, seconds * 1000)
-    })
-}
-
 exports.start = async function start(dcClient, repeat, logs) {
     let fileList = []
+    let iterations = 0
     do {
 
+        iterations++
         console.log('-------------------------------------------------------------------------')
-        console.log(scriptName + (new Date()).toLocaleString() + ' Starting log-processing')
+        console.log(scriptName + (new Date()).toLocaleString() + ' Starting log-processing (#' + iterations + ')')
 
         let tmpFiles = await nitrAPI.getFileList()
         if (tmpFiles.length < 1) console.log(scriptName + 'No content in filelist')
@@ -67,25 +64,28 @@ exports.start = async function start(dcClient, repeat, logs) {
             }
 
             fileList = tmpFiles
-            console.log(scriptName + 'Writing everything into dump-channel...')
-            allLines = format.allLines(allLines)
-            let channel = dcClient.channels.cache.find(channel => channel.id === channels.dump)
 
-            for (const line of allLines) {
-                await channel.send(new Discord.MessageEmbed({
-                    color: line.color,
-                    footer: {
-                        text: line.type.toUpperCase() + ': ' + line.time
-                    },
-                    description: line.content
-                }))
-                console.log(scriptName + 'Sent "DUMP": ' + line.type)
+            if (iterations > 1) {
+                console.log(scriptName + 'Writing everything into dump-channel...')
+                allLines = format.allLines(allLines)
+                let channel = dcClient.channels.cache.find(channel => channel.id === channels.dump)
+
+                for (const line of allLines) {
+                    await channel.send(new Discord.MessageEmbed({
+                        color: line.color,
+                        footer: {
+                            text: line.type.toUpperCase() + ': ' + line.time
+                        },
+                        description: line.content
+                    }))
+                    console.log(scriptName + 'Sent "DUMP": ' + line.type)
+                }
             }
 
         }
 
         console.log(scriptName + 'Going to sleep for ' + repeat + ' seconds.\n')
-        await sleep(repeat)
+        await sleep.timer(repeat)
 
     } while (repeat)
 

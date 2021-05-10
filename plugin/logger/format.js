@@ -1,4 +1,4 @@
-const wpImg = require('./weaponList.js').image
+const wpImg = require.main.require('./plugin/logger/weaponList.js').image
 const scriptName = '- - - > Format: '
 const regexname = /\(([^)]+)\).*/gm
 
@@ -46,7 +46,7 @@ exports.allLines = function allLines(allLines) {
 function hasImg(weapon) {
     if (!weapon) return false
     if (weapon.includes('[')) weapon = weapon.split('[')[0].replace(/\s/g, '')
-    if (wpImg[weapon]) return process.env.weapon_img_url + wpImg[weapon]
+    if (wpImg[weapon]) return process.env.bot_img_url + 'weapon/' + wpImg[weapon]
 }
 
 function admin(line) {
