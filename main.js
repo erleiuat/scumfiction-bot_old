@@ -18,11 +18,27 @@ dcClient.on('ready', () => {
     logger.start(dcClient, args['repeat'], [
         'kill', 'chat', 'admin', 'login', 'violation'
     ])
-    
+
     state.start(dcClient)
 
     statistics.start(dcClient)
 
+})
+
+dcClient.on("message", async msg => {
+    if (msg.member.hasPermission('ADMINISTRATOR')) {
+        if (msg.content.toLowerCase().startsWith("!clearchat")) {
+            console.log(scriptName + '"!clearchat" detected! Clearing channel...')
+            let fetched
+            do {
+                fetched = await msg.channel.messages.fetch({
+                    limit: 100
+                })
+                msg.channel.bulkDelete(fetched)
+            } while (fetched.size >= 2)
+            console.log(scriptName + 'Channel cleaned.')
+        }
+    }
 })
 
 console.log(scriptName + 'Logging in as Discord-Bot')
