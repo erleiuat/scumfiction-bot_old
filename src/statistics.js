@@ -9,6 +9,8 @@ const admins = ['76561198058320009', '76561198082374095', '76561198907112461', '
 const regexID = /\(([^)]+)\)/
 const regexName = /\:(.*?)\(/
 let users = []
+let newData = false
+let listCache = []
 
 exports.start = async function start(dcClient) {
 
@@ -23,77 +25,54 @@ exports.start = async function start(dcClient) {
         await updateHidden(channelHidden)
         console.log(scriptName + 'Processing Stats done')
         iteration++
-        await sleep.timer(15 * 60)
+        await sleep.timer(60)
     } while (true)
 
 }
 
 async function updateHidden(channel) {
 
-    let fetched
-    do {
-        fetched = await channel.messages.fetch({
-            limit: 100
-        })
-        channel.bulkDelete(fetched)
-    } while (fetched.size >= 2)
+    if (!newData) return
+    newData = false
+    await clearChannel(channel)
+    let hArray = []
+    for (u in users) hArray.push({
+        steamID: u,
+        ...users[u]
+    })
 
-    let hiddenArray = []
-    for (u in users) {
-        hiddenArray.push({
-            steamID: u,
-            ...users[u]
-        })
-    }
-
-    hiddenArray.sort((a, b) => (a.login.getTime() > b.login.getTime()) ? 1 : -1)
-    for (let i = 0; i < hiddenArray.length; i++) {
-        let user = hiddenArray[i];
-        let formed = getDuration(user.playtime)
+    hArray.sort((a, b) => (a.login.getTime() > b.login.getTime()) ? 1 : -1)
+    for (let i = 0; i < hArray.length; i++) {
+        let formed = getDuration(hArray[i].playtime)
         await channel.send(new Discord.MessageEmbed({
-            title: user.name,
-            description: 'SteamID: ' + user.steamID + '\nPlaytime: ' + formed.d + 'd ' + formed.h + 'h ' + formed.m + 'm \nLast Login: ' + user.login.toLocaleString() + '\nTotal Logins: ' + user.totalLogins
+            title: hArray[i].name,
+            description: 'SteamID: ' + hArray[i].steamID + '\nPlaytime: ' + formed.d + 'd ' + formed.h + 'h ' + formed.m + 'm \nLast Login: ' + hArray[i].login.toLocaleString() + '\nTotal Logins: ' + hArray[i].totalLogins
         }))
     }
 
 }
 
 async function updateDC(channel) {
-
     let usersArray = []
     for (u in users)
         if (!admins.includes(u)) usersArray.push(users[u])
-
     usersArray.sort((a, b) => (a.playtime > b.playtime) ? 1 : -1).reverse()
-    
-    let fetched
-    do {
-        fetched = await channel.messages.fetch({
-            limit: 100
-        })
-        channel.bulkDelete(fetched)
-    } while (fetched.size >= 2)
-
+    if (JSON.stringify(listCache) == JSON.stringify(usersArray)) return
+    newData = true
+    await clearChannel(channel)
     await sendList(channel, usersArray)
-
+    listCache = usersArray
 }
 
 async function sendList(channel, list) {
 
-    let fields = []
+    let msg = '\n\n\n'
     for (let i = 3; i < list.length; i++) {
         let formed = getDuration(list[i].playtime)
-        fields.push({
-            name: (i + 1) + '. ' + list[i].name,
-            value: 'Playtime: ' + formed.d + ' Days, ' + formed.h + ' Hours, ' + formed.m + ' Minutes \nLogins: ' + list[i].totalLogins
-        })
+        msg = '**' + (i + 1) + '. ' + list[i].name + '**\nPlaytime: ' + formed.d + ' Days, ' + formed.h + ' Hours, ' + formed.m + ' Minutes \nLogins: ' + list[i].totalLogins + '\n\n' + msg
     }
 
-    fields.reverse()
-    await channel.send(new Discord.MessageEmbed({
-        title: 'Other players',
-        fields: fields
-    }))
+    await channel.send(msg)
 
     let pTime = getDuration(list[2].playtime)
     await channel.send(new Discord.MessageEmbed({
@@ -195,6 +174,16 @@ function getDuration(milli) {
         m: Math.floor(minutes)
     }
 
+}
+
+async function clearChannel(channel) {
+    let fetched
+    do {
+        fetched = await channel.messages.fetch({
+            limit: 100
+        })
+        channel.bulkDelete(fetched)
+    } while (fetched.size >= 2)
 }
 
 async function updateTimes() {
