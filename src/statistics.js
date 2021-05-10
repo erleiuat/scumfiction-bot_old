@@ -52,7 +52,7 @@ async function sendList(channel, list) {
         let formed = getDuration(list[i].playtime)
         fields.push({
             name: (i + 1) + '. ' + list[i].name,
-            value: formed.d + ' Days, ' + formed.h + ' Hours, ' + formed.m + ' Minutes'
+            value: 'Playtime: ' + formed.d + ' Days, ' + formed.h + ' Hours, ' + formed.m + ' Minutes \nLogins: ' + list[i].totalLogins
         })
     }
 
@@ -66,11 +66,14 @@ async function sendList(channel, list) {
     await channel.send(new Discord.MessageEmbed({
         title: '3. ' + list[2].name.toUpperCase(),
         color: 'bf8970',
-        description: '**Player number three**',
         thumbnail: {
             url: process.env.bot_img_url + 'medal/bronze.png'
         },
-        fields: [{
+        footer: {
+            text: list[2].totalLogins + ' Logins'
+        },
+        fields: [
+            {
                 name: 'Days',
                 value: pTime.d,
                 inline: true
@@ -92,9 +95,11 @@ async function sendList(channel, list) {
     await channel.send(new Discord.MessageEmbed({
         title: '2. ' + list[1].name.toUpperCase(),
         color: 'bec2cb',
-        description: '**Player number two**',
         thumbnail: {
             url: process.env.bot_img_url + 'medal/silver.png'
+        },
+        footer: {
+            text: list[1].totalLogins + ' Logins'
         },
         fields: [{
                 name: 'Days',
@@ -118,9 +123,11 @@ async function sendList(channel, list) {
     await channel.send(new Discord.MessageEmbed({
         title: '1. ' + list[0].name.toUpperCase(),
         color: 'fdbf00',
-        description: '**Player number one**',
         thumbnail: {
             url: process.env.bot_img_url + 'medal/gold.png'
+        },
+        footer: {
+            text: list[0].totalLogins + ' Logins'
         },
         fields: [{
                 name: 'Days',
@@ -172,12 +179,14 @@ async function updateTimes() {
                 name: null,
                 tmpID: null,
                 login: null,
-                playtime: 0
+                playtime: 0,
+                totalLogins: 0
             }
 
             users[steamID].name = (file[entry].description.match(regexName))[1]
             users[steamID].tmpID = (file[entry].description.match(regexID))[1]
             users[steamID].login = date
+            users[steamID].totalLogins += 1
 
         } else {
 
