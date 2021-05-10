@@ -65,9 +65,8 @@ async function updateDC(channel) {
         if (!admins.includes(u)) usersArray.push(users[u])
 
     usersArray.sort((a, b) => (a.playtime > b.playtime) ? 1 : -1).reverse()
-    updates = true
+    
     let fetched
-
     do {
         fetched = await channel.messages.fetch({
             limit: 100
@@ -200,6 +199,7 @@ function getDuration(milli) {
 
 async function updateTimes() {
     let file = await getLogins()
+    users = []
 
     for (entry in file) {
 
