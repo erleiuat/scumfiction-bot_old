@@ -19,6 +19,7 @@ exports.start = async function start(dcClient) {
                                 type: 'WATCHING'
                             }
                         )
+                        console.log(scriptName + 'State updated')
                     } else {
                         console.log(scriptName + 'Unable to read Server-Status')
                         dcClient.user.setActivity('-', {

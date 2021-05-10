@@ -20,7 +20,7 @@ exports.start = async function start(dcClient, repeat, logs) {
     do {
 
         iterations++
-        console.log('-------------------------------------------------------------------------')
+        console.log(scriptName + '-------------------------------------------------------------------------')
         console.log(scriptName + (new Date()).toLocaleString() + ' Starting log-processing (#' + iterations + ')')
 
         let tmpFiles = await nitrAPI.getFileList()
