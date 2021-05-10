@@ -4,6 +4,7 @@ const scriptName = '[STATE] -> '
 
 
 exports.start = async function start(dcClient) {
+    let iteration = 1
     do {
         request({
             'url': process.env.battlemetrics_url
@@ -19,7 +20,8 @@ exports.start = async function start(dcClient) {
                                 type: 'WATCHING'
                             }
                         )
-                        console.log(scriptName + 'State updated')
+                        console.log(scriptName + 'State updated (#' + iteration + ')')
+                        iteration++
                     } else {
                         console.log(scriptName + 'Unable to read Server-Status')
                         dcClient.user.setActivity('-', {
