@@ -1,5 +1,6 @@
+const chalk = require('chalk')
 const wpImg = require.main.require('./plugin/logger/weaponList.js').image
-const scriptName = '[LOGGER] -> Format: '
+const scriptName = chalk.blue('[LOGGER] -> Format: ')
 const regexname = /\(([^)]+)\).*/gm
 
 exports.line = function line(type, line) {
@@ -45,7 +46,7 @@ exports.allLines = function allLines(allLines) {
 
 function hasImg(weapon) {
     if (!weapon) return false
-    if (weapon.includes('[')) weapon = weapon.split('[')[0].replace(/\s/g, '')
+    if (weapon.includes('_C')) weapon = weapon.split('_C')[0].replace(/\s/g, '')
     if (wpImg[weapon]) return process.env.bot_img_url + 'weapon/' + wpImg[weapon]
 }
 

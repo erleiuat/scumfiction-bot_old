@@ -5,6 +5,7 @@
   "main": "main.js",
   "dependencies": {
     "basic-ftp": "^4.6.6",
+    "chalk": "^4.1.1",
     "discord.js": "^12.5.3",
     "dotenv": "^8.2.0",
     "fetch": "^1.1.0",

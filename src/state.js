@@ -1,6 +1,7 @@
+const chalk = require('chalk')
 const request = require('request')
 const sleep = require.main.require('./plugin/sleep.js')
-const scriptName = '[STATE] -> '
+const scriptName = chalk.green('[STATE] -> ')
 
 
 exports.start = async function start(dcClient) {

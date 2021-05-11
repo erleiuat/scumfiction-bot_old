@@ -1,7 +1,8 @@
+const chalk = require('chalk')
 const fs = require('fs')
 const ftp = require.main.require('./plugin/ftp.js')
 const ftpClient = ftp.client()
-const scriptName = '[LOGGER] -> Check: '
+const scriptName = chalk.blue('[LOGGER] -> Check: ')
 
 
 const checkFiles = {}

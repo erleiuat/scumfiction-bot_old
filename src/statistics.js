@@ -1,9 +1,10 @@
 const fs = require('fs')
 const Discord = require('discord.js')
+const chalk = require('chalk')
 const sleep = require.main.require('./plugin/sleep.js')
 const ftp = require.main.require('./plugin/ftp.js')
 const ftpClient = ftp.client()
-const scriptName = '[STATISTICS] -> '
+const scriptName = chalk.yellow('[STATISTICS] -> ')
 
 const admins = ['76561198058320009', '76561198082374095', '76561198907112461', '76561199166410611']
 const regexID = /\(([^)]+)\)/
@@ -66,13 +67,15 @@ async function updateDC(channel) {
 
 async function sendList(channel, list) {
 
-    let msg = '\n\n\n'
+    let msgs = []
     for (let i = 3; i < list.length; i++) {
         let formed = getDuration(list[i].playtime)
-        msg = '**' + (i + 1) + '. ' + list[i].name + '**\nPlaytime: ' + formed.d + ' Days, ' + formed.h + ' Hours, ' + formed.m + ' Minutes \nLogins: ' + list[i].totalLogins + '\n\n' + msg
+        msgs.push('\n**' + (i + 1) + '. ' + list[i].name + '**\nPlaytime: ' + formed.d + ' Days, ' + formed.h + ' Hours, ' + formed.m + ' Minutes \nLogins: ' + list[i].totalLogins + '\n\n')
     }
 
-    await channel.send(msg)
+    msgs.reverse()
+    for (const msg of msgs)
+        await channel.send(msg)
 
     let pTime = getDuration(list[2].playtime)
     await channel.send(new Discord.MessageEmbed({

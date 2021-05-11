@@ -1,4 +1,5 @@
-const scriptName = '[LOGGER] -> Filter: '
+const chalk = require('chalk')
+const scriptName = chalk.blue('[LOGGER] -> Filter: ')
 const regexname = /\(([^)]+)\).*/gm
 
 exports.line = function line(type, line) {

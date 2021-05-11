@@ -1,10 +1,11 @@
 const Discord = require('discord.js')
+const chalk = require('chalk')
 const nitrAPI = require.main.require('./plugin/logger/nitrAPI.js')
 const format = require.main.require('./plugin/logger/format.js')
 const filter = require.main.require('./plugin/logger/filter.js')
 const check = require.main.require('./plugin/logger/check.js')
 const sleep = require.main.require('./plugin/sleep.js')
-const scriptName = '[LOGGER] -> '
+const scriptName = chalk.blue('[LOGGER] -> ')
 const channels = {
     kill: process.env.channel_kill,
     chat: process.env.channel_chat,
@@ -24,7 +25,7 @@ exports.start = async function start(dcClient, repeat, logs) {
         console.log(scriptName + (new Date()).toLocaleString() + ' Starting log-processing (#' + iterations + ')')
 
         let tmpFiles = await nitrAPI.getFileList()
-        if (tmpFiles.length < 1) console.log(scriptName + 'No content in filelist')
+        if (!tmpFiles || tmpFiles.length < 1) console.log(scriptName + 'No content in filelist')
         else if (JSON.stringify(fileList.sort()) == JSON.stringify(tmpFiles.sort())) console.log(scriptName + 'No new files detected.')
         else {
 
@@ -41,6 +42,7 @@ exports.start = async function start(dcClient, repeat, logs) {
 
                 let entries = []
                 let lines = await nitrAPI.getLogLines(await filterList(log, newFiles))
+                if (lines.length < 1) continue
                 for (const line of lines) {
                     if (filter.line(log, line)) entries.push(format.line(log, line))
                     allLines.push({
