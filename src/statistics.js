@@ -6,7 +6,7 @@ const ftp = require.main.require('./plugin/ftp.js')
 const ftpClient = ftp.client()
 const scriptName = chalk.yellow('[STATISTICS] -> ')
 
-const admins = ['76561198058320009', '76561198082374095', '76561198907112461', '76561199166410611']
+const admins = ['76561198058320009', '76561198082374095', '76561198907112461', '76561199166410611', '76561198046659274']
 const regexID = /\(([^)]+)\)/
 const regexName = /\:(.*?)\(/
 let users = []
